@@ -72,6 +72,18 @@
             margin-bottom: 20px;
             border-radius: 5px;
         }
+
+        @media (max-width: 600px) {
+            body {
+                padding: 10px;
+            }
+            .container {
+                padding: 15px;
+            }
+            h1 {
+                font-size: 1.8em;
+            }
+        }
     </style>
 </head>
 <body>
@@ -79,7 +91,7 @@
         <h1 id="form-title">Report an Issue</h1>
         <p style="text-align: center;">Use this form to report a bug or suggest a feature for the <strong>Feedback Management System</strong>.</p>
 
-        <form action="https://formspree.io/f/mgopyoak" method="POST" enctype="multipart/form-data">
+        <form id="issue-form">
             <div class="form-group">
                 <label for="report-type">Report Type</label>
                 <select id="report-type" name="report-type" required>
@@ -131,8 +143,8 @@
                 <textarea id="steps" name="steps" placeholder="List the steps to reproduce the issue."></textarea>
             </div>
             <div class="form-group">
-                <label for="screenshot">Upload Screenshot (Optional)</label>
-                <input type="file" id="screenshot" name="upload" accept="image/*">
+                <label for="screenshot">Upload Screenshots (Optional)</label>
+                <input type="file" id="screenshot" name="upload" accept="image/*" multiple>
             </div>
             <button type="submit">Submit Report</button>
         </form>
@@ -172,6 +184,45 @@
             reportTypeSelect.addEventListener('change', function() {
                 updateFormForReportType(this.value);
             });
+
+            const issueForm = document.getElementById('issue-form');
+            issueForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+
+                const formData = new FormData(issueForm);
+                const issueData = Object.fromEntries(formData.entries());
+
+                const screenshotFiles = document.getElementById('screenshot').files;
+                if (screenshotFiles.length > 0) {
+                    const screenshotPromises = [];
+                    issueData.screenshots = [];
+
+                    for (let i = 0; i < screenshotFiles.length; i++) {
+                        const reader = new FileReader();
+                        const promise = new Promise((resolve) => {
+                            reader.onload = function(event) {
+                                issueData.screenshots.push(event.target.result);
+                                resolve();
+                            };
+                        });
+                        reader.readAsDataURL(screenshotFiles[i]);
+                        screenshotPromises.push(promise);
+                    }
+
+                    Promise.all(screenshotPromises).then(() => {
+                        saveIssue(issueData);
+                    });
+                } else {
+                    saveIssue(issueData);
+                }
+            });
+
+            function saveIssue(issueData) {
+                let issues = JSON.parse(localStorage.getItem('issues')) || [];
+                issues.push(issueData);
+                localStorage.setItem('issues', JSON.stringify(issues));
+                window.location.href = 'issue-listing.html';
+            }
         });
     </script>
 </body>
