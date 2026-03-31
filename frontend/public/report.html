@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Report an Issue – Feedback Management System</title>
+    <meta name="description" content="Report a bug or suggest a feature for the Feedback Management System. Fill in the form and your report will be saved for review.">
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: #f0f2f5;
+            color: #333;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 800px;
+            margin: auto;
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        h1 {
+            text-align: center;
+            color: #0e75b6;
+        }
+        form {
+            display: flex;
+            flex-direction: column;
+        }
+        label {
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input[type="text"],
+        input[type="email"],
+        select,
+        textarea {
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            width: 100%;
+            box-sizing: border-box;
+            font-family: inherit;
+        }
+        textarea {
+            height: 150px;
+            resize: vertical;
+        }
+        button {
+            background: #0e75b6;
+            color: #fff;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background 0.2s;
+        }
+        button:hover {
+            background: #005a8a;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .instructions {
+            background-color: #e7f3fe;
+            border-left: 6px solid #2196F3;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+        }
+
+        .screenshot-input-container {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        .screenshot-input {
+            flex-grow: 1;
+        }
+        #add-screenshot-btn {
+            width: 40px;
+            height: 40px;
+            font-size: 24px;
+            line-height: 40px;
+            text-align: center;
+            padding: 0;
+        }
+        .remove-screenshot-btn {
+            width: 30px;
+            height: 30px;
+            font-size: 16px;
+            line-height: 30px;
+            text-align: center;
+            padding: 0;
+            margin-left: 10px;
+            background-color: #dc3545;
+        }
+        .remove-screenshot-btn:hover {
+            background-color: #c82333;
+        }
+
+        /* Top nav bar */
+        .top-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 800px;
+            margin: 0 auto 18px auto;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        .top-nav a {
+            color: #0e75b6;
+            text-decoration: none;
+            font-size: 0.92em;
+            padding: 7px 16px;
+            border-radius: 6px;
+            border: 1px solid #0e75b6;
+            transition: background 0.2s, color 0.2s;
+            white-space: nowrap;
+        }
+        .top-nav a:hover {
+            background: #0e75b6;
+            color: #fff;
+        }
+        .top-nav .nav-title {
+            font-weight: 600;
+            font-size: 0.95em;
+            color: #555;
+        }
+
+        @media (max-width: 600px) {
+            body {
+                padding: 10px;
+            }
+            .container {
+                padding: 15px;
+            }
+            h1 {
+                font-size: 1.8em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="top-nav">
+        <span class="nav-title">&#128203; Feedback Management System</span>
+        <a href="issue-listing.html" id="nav-view-issues">View All Issues</a>
+    </div>
+    <div class="container">
+        <h1 id="form-title">Report an Issue</h1>
+        <p style="text-align: center;">Use this form to report a bug or suggest a feature for the <strong>Feedback Management System</strong>.</p>
+
+        <form id="issue-form">
+            <div class="form-group">
+                <label for="report-type">Report Type</label>
+                <select id="report-type" name="report-type" required>
+                    <option value="bug">Bug Report</option>
+                    <option value="feature">Feature Request</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="name">Your Name (Optional)</label>
+                <input type="text" id="name" name="name">
+            </div>
+            <div class="form-group">
+                <label for="email">Your Email (Optional)</label>
+                <input type="email" id="email" name="email">
+            </div>
+            <div class="form-group">
+                <label for="user-role">Your Role</label>
+                <select id="user-role" name="user-role" required>
+                    <option value="">Select your role</option>
+                    <option value="Student">Student</option>
+                    <option value="Teacher">Teacher</option>
+                    <option value="Admin">Admin</option>
+                    <option value="Department">Department</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="device">Device</label>
+                <select id="device" name="device" required>
+                    <option value="">Select a device</option>
+                    <option value="Laptop/Desktop">Laptop/Desktop</option>
+                    <option value="Mobile">Mobile</option>
+                    <option value="Tablet">Tablet</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="browser">Browser</label>
+                <input type="text" id="browser" name="browser" placeholder="e.g., Chrome, Safari, Firefox" required>
+            </div>
+             <div class="form-group">
+                <label for="page-feature">Page or Feature</label>
+                <input type="text" id="page-feature" name="page-feature" placeholder="e.g., Login Page, Student Dashboard, Feedback Form" required>
+            </div>
+            <div class="form-group">
+                <label for="issue" id="description-label">Description of the Issue</label>
+                <textarea id="issue" name="issue" placeholder="Please describe the bug or issue in detail. What did you expect to happen and what actually happened?" required></textarea>
+            </div>
+            <div class="form-group" id="steps-group">
+                <label for="steps">Steps to Reproduce (Optional)</label>
+                <textarea id="steps" name="steps" placeholder="List the steps to reproduce the issue."></textarea>
+            </div>
+            <div class="form-group">
+                <label for="screenshot">Upload Screenshots (Optional)</label>
+                <div id="screenshots-container">
+                    <input type="file" name="screenshots" accept="image/*" class="screenshot-input">
+                </div>
+                <button type="button" id="add-screenshot-btn" style="margin-top: 5px; width: 40px; font-size: 20px;">+</button>
+            </div>
+            <button type="submit">Submit Report</button>
+        </form>
+        <div style="text-align: center; margin-top: 20px;">
+            <a href="issue-listing.html" style="color: #0e75b6;">&#8592; View Submitted Issues</a>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const reportTypeSelect = document.getElementById('report-type');
+            const formTitle = document.getElementById('form-title');
+            const descriptionLabel = document.getElementById('description-label');
+            const issueTextarea = document.getElementById('issue');
+            const stepsGroup = document.getElementById('steps-group');
+
+            function updateFormForReportType(type) {
+                if (type === 'feature') {
+                    formTitle.textContent = 'Suggest a Feature';
+                    descriptionLabel.textContent = 'Description of the Feature';
+                    issueTextarea.placeholder = 'Please describe the new feature you would like to see.';
+                    stepsGroup.style.display = 'none';
+                } else {
+                    formTitle.textContent = 'Report a Bug';
+                    descriptionLabel.textContent = 'Description of the Bug';
+                    issueTextarea.placeholder = 'Please describe the bug in detail. What did you expect to happen and what actually happened?';
+                    stepsGroup.style.display = 'block';
+                }
+            }
+
+            if (urlParams.has('feature')) {
+                reportTypeSelect.value = 'feature';
+                updateFormForReportType('feature');
+            }
+
+            reportTypeSelect.addEventListener('change', function() {
+                updateFormForReportType(this.value);
+            });
+
+            const screenshotsContainer = document.getElementById('screenshots-container');
+            const addScreenshotBtn = document.getElementById('add-screenshot-btn');
+
+            addScreenshotBtn.addEventListener('click', function() {
+                const newInputContainer = document.createElement('div');
+                newInputContainer.className = 'screenshot-input-container';
+
+                const newInput = document.createElement('input');
+                newInput.type = 'file';
+                newInput.name = 'screenshots';
+                newInput.accept = 'image/*';
+                newInput.className = 'screenshot-input';
+
+                const removeBtn = document.createElement('button');
+                removeBtn.type = 'button';
+                removeBtn.className = 'remove-screenshot-btn';
+                removeBtn.textContent = '-';
+                removeBtn.addEventListener('click', function() {
+                    newInputContainer.remove();
+                });
+
+                newInputContainer.appendChild(newInput);
+                newInputContainer.appendChild(removeBtn);
+                screenshotsContainer.appendChild(newInputContainer);
+            });
+
+            const issueForm = document.getElementById('issue-form');
+            issueForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+
+                const formData = new FormData(issueForm);
+                const issueData = Object.fromEntries(formData.entries());
+                delete issueData.screenshots; // Remove placeholder from form data
+
+                const screenshotInputs = document.querySelectorAll('.screenshot-input');
+                const screenshotPromises = [];
+                issueData.screenshots = [];
+
+                screenshotInputs.forEach(input => {
+                    if (input.files.length > 0) {
+                        const file = input.files[0];
+                        const reader = new FileReader();
+                        const promise = new Promise((resolve) => {
+                            reader.onload = function(event) {
+                                issueData.screenshots.push(event.target.result);
+                                resolve();
+                            };
+                        });
+                        reader.readAsDataURL(file);
+                        screenshotPromises.push(promise);
+                    }
+                });
+
+                if (screenshotPromises.length > 0) {
+                    Promise.all(screenshotPromises).then(() => {
+                        saveIssue(issueData);
+                    });
+                } else {
+                    saveIssue(issueData);
+                }
+            });
+
+            function saveIssue(issueData) {
+                let issues = JSON.parse(localStorage.getItem('issues')) || [];
+                issues.push(issueData);
+                localStorage.setItem('issues', JSON.stringify(issues));
+                window.location.href = 'issue-listing.html';
+            }
+        });
+    </script>
+</body>
+</html>
+
