@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Feedback Management System - Report</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: #f0f2f5;
+            color: #333;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 800px;
+            margin: auto;
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        h1 {
+            text-align: center;
+            color: #0e75b6;
+        }
+        form {
+            display: flex;
+            flex-direction: column;
+        }
+        label {
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input[type="text"],
+        input[type="email"],
+        select,
+        textarea {
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            width: 100%;
+            box-sizing: border-box;
+            font-family: inherit;
+        }
+        textarea {
+            height: 150px;
+            resize: vertical;
+        }
+        button {
+            background: #0e75b6;
+            color: #fff;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background 0.2s;
+        }
+        button:hover {
+            background: #005a8a;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .instructions {
+            background-color: #e7f3fe;
+            border-left: 6px solid #2196F3;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 id="form-title">Report an Issue</h1>
+        <p style="text-align: center;">Use this form to report a bug or suggest a feature for the <strong>Feedback Management System</strong>.</p>
+
+        <form action="https://formspree.io/f/mgopyoak" method="POST" enctype="multipart/form-data">
+            <div class="form-group">
+                <label for="report-type">Report Type</label>
+                <select id="report-type" name="report-type" required>
+                    <option value="bug">Bug Report</option>
+                    <option value="feature">Feature Request</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="name">Your Name (Optional)</label>
+                <input type="text" id="name" name="name">
+            </div>
+            <div class="form-group">
+                <label for="email">Your Email (Optional)</label>
+                <input type="email" id="email" name="email">
+            </div>
+            <div class="form-group">
+                <label for="user-role">Your Role</label>
+                <select id="user-role" name="user-role" required>
+                    <option value="">Select your role</option>
+                    <option value="Student">Student</option>
+                    <option value="Teacher">Teacher</option>
+                    <option value="Admin">Admin</option>
+                    <option value="Department">Department</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="device">Device</label>
+                <select id="device" name="device" required>
+                    <option value="">Select a device</option>
+                    <option value="Laptop/Desktop">Laptop/Desktop</option>
+                    <option value="Mobile">Mobile</option>
+                    <option value="Tablet">Tablet</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="browser">Browser</label>
+                <input type="text" id="browser" name="browser" placeholder="e.g., Chrome, Safari, Firefox" required>
+            </div>
+             <div class="form-group">
+                <label for="page-feature">Page or Feature</label>
+                <input type="text" id="page-feature" name="page-feature" placeholder="e.g., Login Page, Student Dashboard, Feedback Form" required>
+            </div>
+            <div class="form-group">
+                <label for="issue" id="description-label">Description of the Issue</label>
+                <textarea id="issue" name="issue" placeholder="Please describe the bug or issue in detail. What did you expect to happen and what actually happened?" required></textarea>
+            </div>
+            <div class="form-group" id="steps-group">
+                <label for="steps">Steps to Reproduce (Optional)</label>
+                <textarea id="steps" name="steps" placeholder="List the steps to reproduce the issue."></textarea>
+            </div>
+            <div class="form-group">
+                <label for="screenshot">Upload Screenshot (Optional)</label>
+                <input type="file" id="screenshot" name="upload" accept="image/*">
+            </div>
+            <button type="submit">Submit Report</button>
+        </form>
+        <div style="text-align: center; margin-top: 20px;">
+            <a href="index.html">Back to Home</a>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const reportTypeSelect = document.getElementById('report-type');
+            const formTitle = document.getElementById('form-title');
+            const descriptionLabel = document.getElementById('description-label');
+            const issueTextarea = document.getElementById('issue');
+            const stepsGroup = document.getElementById('steps-group');
+
+            function updateFormForReportType(type) {
+                if (type === 'feature') {
+                    formTitle.textContent = 'Suggest a Feature';
+                    descriptionLabel.textContent = 'Description of the Feature';
+                    issueTextarea.placeholder = 'Please describe the new feature you would like to see.';
+                    stepsGroup.style.display = 'none';
+                } else {
+                    formTitle.textContent = 'Report a Bug';
+                    descriptionLabel.textContent = 'Description of the Bug';
+                    issueTextarea.placeholder = 'Please describe the bug in detail. What did you expect to happen and what actually happened?';
+                    stepsGroup.style.display = 'block';
+                }
+            }
+
+            if (urlParams.has('feature')) {
+                reportTypeSelect.value = 'feature';
+                updateFormForReportType('feature');
+            }
+
+            reportTypeSelect.addEventListener('change', function() {
+                updateFormForReportType(this.value);
+            });
+        });
+    </script>
+</body>
+</html>
+
