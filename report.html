@@ -73,6 +73,36 @@
             border-radius: 5px;
         }
 
+        .screenshot-input-container {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        .screenshot-input {
+            flex-grow: 1;
+        }
+        #add-screenshot-btn {
+            width: 40px;
+            height: 40px;
+            font-size: 24px;
+            line-height: 40px;
+            text-align: center;
+            padding: 0;
+        }
+        .remove-screenshot-btn {
+            width: 30px;
+            height: 30px;
+            font-size: 16px;
+            line-height: 30px;
+            text-align: center;
+            padding: 0;
+            margin-left: 10px;
+            background-color: #dc3545;
+        }
+        .remove-screenshot-btn:hover {
+            background-color: #c82333;
+        }
+
         @media (max-width: 600px) {
             body {
                 padding: 10px;
@@ -144,7 +174,10 @@
             </div>
             <div class="form-group">
                 <label for="screenshot">Upload Screenshots (Optional)</label>
-                <input type="file" id="screenshot" name="upload" accept="image/*" multiple>
+                <div id="screenshots-container">
+                    <input type="file" name="screenshots" accept="image/*" class="screenshot-input">
+                </div>
+                <button type="button" id="add-screenshot-btn" style="margin-top: 5px; width: 40px; font-size: 20px;">+</button>
             </div>
             <button type="submit">Submit Report</button>
         </form>
@@ -185,19 +218,47 @@
                 updateFormForReportType(this.value);
             });
 
+            const screenshotsContainer = document.getElementById('screenshots-container');
+            const addScreenshotBtn = document.getElementById('add-screenshot-btn');
+
+            addScreenshotBtn.addEventListener('click', function() {
+                const newInputContainer = document.createElement('div');
+                newInputContainer.className = 'screenshot-input-container';
+
+                const newInput = document.createElement('input');
+                newInput.type = 'file';
+                newInput.name = 'screenshots';
+                newInput.accept = 'image/*';
+                newInput.className = 'screenshot-input';
+
+                const removeBtn = document.createElement('button');
+                removeBtn.type = 'button';
+                removeBtn.className = 'remove-screenshot-btn';
+                removeBtn.textContent = '-';
+                removeBtn.addEventListener('click', function() {
+                    newInputContainer.remove();
+                });
+
+                newInputContainer.appendChild(newInput);
+                newInputContainer.appendChild(removeBtn);
+                screenshotsContainer.appendChild(newInputContainer);
+            });
+
             const issueForm = document.getElementById('issue-form');
             issueForm.addEventListener('submit', function(e) {
                 e.preventDefault();
 
                 const formData = new FormData(issueForm);
                 const issueData = Object.fromEntries(formData.entries());
+                delete issueData.screenshots; // Remove placeholder from form data
 
-                const screenshotFiles = document.getElementById('screenshot').files;
-                if (screenshotFiles.length > 0) {
-                    const screenshotPromises = [];
-                    issueData.screenshots = [];
+                const screenshotInputs = document.querySelectorAll('.screenshot-input');
+                const screenshotPromises = [];
+                issueData.screenshots = [];
 
-                    for (let i = 0; i < screenshotFiles.length; i++) {
+                screenshotInputs.forEach(input => {
+                    if (input.files.length > 0) {
+                        const file = input.files[0];
                         const reader = new FileReader();
                         const promise = new Promise((resolve) => {
                             reader.onload = function(event) {
@@ -205,10 +266,12 @@
                                 resolve();
                             };
                         });
-                        reader.readAsDataURL(screenshotFiles[i]);
+                        reader.readAsDataURL(file);
                         screenshotPromises.push(promise);
                     }
+                });
 
+                if (screenshotPromises.length > 0) {
                     Promise.all(screenshotPromises).then(() => {
                         saveIssue(issueData);
                     });
