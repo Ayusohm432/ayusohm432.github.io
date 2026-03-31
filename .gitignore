@@ -1,1 +1,65 @@
-.vscode
+# ===================================
+# Editor & IDE
+# ===================================
+.vscode/
+.idea/
+*.suo
+*.user
+
+# ===================================
+# Environment & Secrets
+# ===================================
+.env
+.env.*
+!.env.example
+*.env.local
+
+# ===================================
+# Python / Backend
+# ===================================
+.venv/
+venv/
+env/
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.egg-info/
+dist/
+build/
+.pytest_cache/
+*.log
+
+# SQLite database (local dev only)
+*.db
+*.sqlite3
+
+# Temp extraction scripts
+extract.py
+extract2.py
+resume_text.txt
+
+# ===================================
+# Node.js / Frontend
+# ===================================
+node_modules/
+npm-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Vite build output
+frontend/dist/
+frontend/.vite/
+
+# ===================================
+# OS generated
+# ===================================
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ===================================
+# Misc
+# ===================================
+*.bak
+*.tmp

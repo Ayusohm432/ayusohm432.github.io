@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ayush Kumar - Portfolio</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            background: #f0f2f5;
+            color: #333;
+        }
+        .container {
+            max-width: 960px;
+            margin: 20px auto;
+            padding: 20px;
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        header {
+            text-align: center;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #e5e5e5;
+        }
+        header img.banner {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+        }
+        header h1 {
+            margin: 10px 0 5px;
+            font-size: 2.5em;
+        }
+        header h3 {
+            margin: 0;
+            font-weight: 400;
+            color: #666;
+        }
+        .profile-view {
+            text-align: center;
+            margin: 15px 0;
+        }
+        .main-content {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin-top: 20px;
+        }
+        .about, .connect, .skills, .stats {
+            flex: 1;
+            min-width: 300px;
+        }
+        .about ul {
+            list-style: none;
+            padding: 0;
+        }
+        .about ul li {
+            background: #f9f9f9;
+            margin-bottom: 8px;
+            padding: 10px;
+            border-radius: 5px;
+        }
+        .connect .social-links a {
+            margin-right: 10px;
+            display: inline-block;
+        }
+        .connect .social-links img {
+            transition: transform 0.2s;
+        }
+        .connect .social-links img:hover {
+            transform: scale(1.1);
+        }
+        .skills .tools-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .skills .tools-grid a {
+            display: inline-block;
+        }
+        .skills .tools-grid img {
+            transition: transform 0.2s;
+        }
+        .skills .tools-grid img:hover {
+            transform: scale(1.1);
+        }
+        .stats img {
+            max-width: 100%;
+            height: auto;
+            margin-bottom: 10px;
+        }
+        h3.section-title {
+            border-bottom: 2px solid #0e75b6;
+            padding-bottom: 5px;
+            margin-bottom: 15px;
+        }
+        footer {
+            text-align: center;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid #e5e5e5;
+            font-size: 0.9em;
+            color: #666;
+        }
+        @media (max-width: 768px) {
+            .main-content {
+                flex-direction: column;
+            }
+            header h1 {
+                font-size: 2em;
+            }
+            .project-card .links a {
+                margin-bottom: 10px;
+            }
+        }
+        @media (max-width: 480px) {
+            body {
+                padding: 10px;
+            }
+            .container {
+                padding: 15px;
+            }
+            header h1 {
+                font-size: 1.8em;
+            }
+            header h3 {
+                font-size: 1em;
+            }
+            .project-card .links {
+                display: flex;
+                flex-direction: column;
+            }
+        }
+        .projects {
+            margin-top: 20px;
+        }
+        .project-card {
+            background: #f9f9f9;
+            border: 1px solid #e5e5e5;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        .project-card h4 {
+            margin-top: 0;
+            color: #0e75b6;
+        }
+        .project-card .links a {
+            display: inline-block;
+            background: #0e75b6;
+            color: #fff;
+            padding: 8px 12px;
+            border-radius: 5px;
+            text-decoration: none;
+            margin-right: 10px;
+            font-size: 0.9em;
+            transition: background 0.2s;
+        }
+        .project-card .links a:hover {
+            background: #005a8a;
+        }
+        .project-card .credentials {
+            margin-top: 15px;
+            background: #e7f3fe;
+            padding: 15px;
+            border-radius: 5px;
+            font-size: 0.9em;
+        }
+        .project-card .credentials p {
+            margin: 5px 0;
+        }
+        .project-card .credentials strong {
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <header>
+            <img src="Market-Programming-Banner.jpg" alt="MasterHead" class="banner">
+            <h1>Hi 👋, I'm Ayush Kumar</h1>
+            <h3>Pursuing B.Tech in Computer Science & Engineering From Gaya College Of Engineering</h3>
+            <div class="profile-view">
+                <img src="https://komarev.com/ghpvc/?username=ayusohm432&label=Profile%20views&color=0e75b6&style=flat" alt="ayusohm432" />
+            </div>
+        </header>
+
+        <div class="main-content">
+            <div class="about">
+                <h3 class="section-title">About Me</h3>
+                <img align="right" alt="Coding" width="300" src="https://mir-s3-cdn-cf.behance.net/project_modules/max_1200/bbefa799786133.5efa9bf3d1b49.gif" style="border-radius: 8px; margin-left: 20px;">
+                <ul>
+                    <li>🔭 I’m currently working on <a href="https://github.com/Ayusohm432/Feedback-Management-System">Feedback Management System</a></li>
+                    <li>🌱 I’m currently learning <strong>Cyber Security</strong></li>
+                    <li>👯 I’m looking to collaborate on <a href="https://github.com/Ayusohm432/Feedback-Management-System">Feedback Management System</a></li>
+                    <li>🤝 I’m looking for help with <a href="https://github.com/Ayusohm432/Feedback-Management-System">Feedback Management System</a></li>
+                    <li>👨‍💻 All of my projects are available at <a href="https://github.com/Ayusohm432">my GitHub</a></li>
+                    <li>📝 I regularly write articles on <a href="https://ayusohm432.hashnode.dev/">Hashnode</a></li>
+                    <li>💬 Ask me about <strong>Android</strong></li>
+                    <li>📫 How to reach me: <a href="mailto:ayushkumar76174@gmail.com">ayushkumar76174@gmail.com</a></li>
+                    <li>📄 Know about my experiences: <a href="https://drive.google.com/file/d/1QOc24Keg_n8v7dkkDDunjNnxKHBw0Cla/view?usp=drive_link">My Resume</a></li>
+                    <li>⚡ My Website: <a href="https://ayusohm.wordpress.com">WordPress Blog</a></li>
+                    <li>🐞 <a href="report.html">Report a bug</a></li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="projects">
+            <h3 class="section-title">Projects</h3>
+            <div class="project-card">
+                <h4>Feedback Management System</h4>
+                <p>A web application for collecting and managing feedback from users. It allows students to give feedback to teachers, and admins to manage the feedback.</p>
+                <div class="links">
+                    <a href="https://ayusohm432.github.io/Feedback-Management-System/" target="_blank">Visit Website</a>
+                    <a href="report.html">Report Bug</a>
+                    <a href="report.html?feature=true">Suggest a Feature</a>
+                    <a href="issue-listing.html">View Issues</a>
+                </div>
+                <div class="credentials">
+                    <p><strong>Common Password:</strong> Hello@123</p>
+                    <p><strong>Admin ID:</strong> admin@gce.in</p>
+                    <p><strong>Department ID:</strong> 105</p>
+                    <p><strong>Teacher IDs:</strong> pratik@gce.in, ritesh@gce.in, alok@gce.in</p>
+                    <p><strong>Sample Student ID:</strong> 23105110902</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="connect">
+            <h3 class="section-title">Connect with me</h3>
+            <p class="social-links">
+                <a href="https://linkedin.com/in/ayusohm432" target="_blank"><img src="https://raw.githubusercontent.com/rahuldkjain/github-profile-readme-generator/master/src/images/icons/Social/linked-in-alt.svg" alt="LinkedIn" height="30" width="40" /></a>
+                <a href="https://hashnode.com/@ayusohm432" target="_blank"><img src="https://raw.githubusercontent.com/rahuldkjain/github-profile-readme-generator/master/src/images/icons/Social/hashnode.svg" alt="Hashnode" height="30" width="40" /></a>
+                <a href="https://www.hackerrank.com/ayusohm432" target="_blank"><img src="https://raw.githubusercontent.com/rahuldkjain/github-profile-readme-generator/master/src/images/icons/Social/hackerrank.svg" alt="HackerRank" height="30" width="40" /></a>
+                <a href="https://www.leetcode.com/ayusohm432" target="_blank"><img src="https://raw.githubusercontent.com/rahuldkjain/github-profile-readme-generator/master/src/images/icons/Social/leet-code.svg" alt="LeetCode" height="30" width="40" /></a>
+            </p>
+        </div>
+
+        <div class="skills">
+            <h3 class="section-title">Languages and Tools</h3>
+            <div class="tools-grid">
+                <a href="https://developer.android.com" target="_blank" rel="noreferrer"><img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/android/android-original-wordmark.svg" alt="android" width="40" height="40"/></a>
+                <a href="https://cordova.apache.org/" target="_blank" rel="noreferrer"><img src="https://www.vectorlogo.zone/logos/apache_cordova/apache_cordova-icon.svg" alt="apachecordova" width="40" height="40"/></a>
+                <a href="https://www.arduino.cc/" target="_blank" rel="noreferrer"><img src="https://cdn.worldvectorlogo.com/logos/arduino-1.svg" alt="arduino" width="40" height="40"/></a>
+                <a href="https://aws.amazon.com" target="_blank" rel="noreferrer"><img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/amazonwebservices/amazonwebservices-original-wordmark.svg" alt="aws" width="40" height="40"/></a>
+                <a href="https://www.cprogramming.com/" target="_blank" rel="noreferrer"><img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/c/c-original.svg" alt="c" width="40" height="40"/></a>
+                <a href="https://www.w3schools.com/cpp/" target="_blank" rel="noreferrer"><img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/cplusplus/cplusplus-original.svg" alt="cplusplus" width="40" height="40"/></a>
+                <a href="https://www.w3schools.com/css/" target="_blank" rel="noreferrer"><img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/css3/css3-original-wordmark.svg" alt="css3" width="40" height="40"/></a>
+                <a href="https://www.cypress.io" target="_blank" rel="noreferrer"><img src="https://raw.githubusercontent.com/simple-icons/simple-icons/6e46ec1fc23b60c8fd0d2f2ff46db82e16dbd75f/icons/cypress.svg" alt="cypress" width="40" height="40"/></a>
+                <a href="https://d3js.org/" target="_blank" rel="noreferrer"><img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/d3js/d3js-original.svg" alt="d3js" width="40" height="40"/></a>
+                <a href="https://www.djangoproject.com/" target="_blank" rel="noreferrer"><img src="https://cdn.worldvectorlogo.com/logos/django.svg" alt="django" width="40" height="40"/></a>
+                <a href="https://firebase.google.com/" target="_blank" rel="noreferrer"><img src="https://www.vectorlogo.zone/logos/firebase/firebase-icon.svg" alt="firebase" width="40" height="40"/></a>
+                <a href="https://www.gatsbyjs.com/" target="_blank" rel="noreferrer"><img src="https://www.vectorlogo.zone/logos/gatsbyjs/gatsbyjs-icon.svg" alt="gatsby" width="40" height="40"/></a>
+                <a href="https://cloud.google.com" target="_blank" rel="noreferrer"><img src="https://www.vectorlogo.zone/logos/google_cloud/google_cloud-icon.svg" alt="gcp" width="40" height="40"/></a>
+                <a href="https://git-scm.com/" target="_blank" rel="noreferrer"><img src="https://www.vectorlogo.zone/logos/git-scm/git-scm-icon.svg" alt="git" width="40" height="40"/></a>
+                <a href="https://www.w3.org/html/" target="_blank" rel="noreferrer"><img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/html5/html5-original-wordmark.svg" alt="html5" width="40" height="40"/></a>
+                <a href="https://www.adobe.com/in/products/illustrator.html" target="_blank" rel="noreferrer"><img src="https://www.vectorlogo.zone/logos/adobe_illustrator/adobe_illustrator-icon.svg" alt="illustrator" width="40" height="40"/></a>
+                <a href="https://www.java.com" target="_blank" rel="noreferrer"><img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/java/java-original.svg" alt="java" width="40" height="40"/></a>
+                <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript" target="_blank" rel="noreferrer"><img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/javascript/javascript-original.svg" alt="javascript" width="40" height="40"/></a>
+                <a href="https://www.linux.org/" target="_blank" rel="noreferrer"><img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/linux/linux-original.svg" alt="linux" width="40" height="40"/></a>
+                <a href="https://mariadb.org/" target="_blank" rel="noreferrer"><img src="https://www.vectorlogo.zone/logos/mariadb/mariadb-icon.svg" alt="mariadb" width="40" height="40"/></a>
+                <a href="https://www.mysql.com/" target="_blank" rel="noreferrer"><img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/mysql/mysql-original-wordmark.svg" alt="mysql" width="40" height="40"/></a>
+                <a href="https://nodejs.org" target="_blank" rel="noreferrer"><img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/nodejs/nodejs-original-wordmark.svg" alt="nodejs" width="40" height="40"/></a>
+                <a href="https://opencv.org/" target="_blank" rel="noreferrer"><img src="https://www.vectorlogo.zone/logos/opencv/opencv-icon.svg" alt="opencv" width="40" height="40"/></a>
+                <a href="https://www.oracle.com/" target="_blank" rel="noreferrer"><img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/oracle/oracle-original.svg" alt="oracle" width="40" height="40"/></a>
+                <a href="https://www.php.net" target="_blank" rel="noreferrer"><img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/php/php-original.svg" alt="php" width="40" height="40"/></a>
+                <a href="https://www.python.org" target="_blank" rel="noreferrer"><img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/python/python-original.svg" alt="python" width="40" height="40"/></a>
+                <a href="https://unity.com/" target="_blank" rel="noreferrer"><img src="https://www.vectorlogo.zone/logos/unity3d/unity3d-icon.svg" alt="unity" width="40" height="40"/></a>
+                <a href="https://zapier.com" target="_blank" rel="noreferrer"><img src="https://www.vectorlogo.zone/logos/zapier/zapier-icon.svg" alt="zapier" width="40" height="40"/></a>
+            </div>
+        </div>
+
+        <div class="stats">
+            <h3 class="section-title">My GitHub Stats</h3>
+            <p><img src="https://github-readme-stats.vercel.app/api/top-langs?username=ayusohm432&show_icons=true&locale=en&layout=compact" alt="Top Languages" /></p>
+            <p><img src="https://github-readme-stats.vercel.app/api?username=ayusohm432&show_icons=true&locale=en" alt="GitHub Stats" /></p>
+            <p><img src="https://github-readme-streak-stats.herokuapp.com/?user=ayusohm432&" alt="GitHub Streak" /></p>
+        </div>
+
+        <footer>
+            <p>&copy; 2024 Ayush Kumar. All Rights Reserved.</p>
+        </footer>
+    </div>
+
+</body>
+</html>
