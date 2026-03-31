@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Issue Listing - Feedback Management System</title>
+    <title>Submitted Issues – Feedback Management System</title>
+    <meta name="description" content="Browse all submitted bug reports and feature requests for the Feedback Management System.">
     <style>
         :root {
             --bg-primary: #f0f2f5;
@@ -324,6 +325,36 @@
             box-shadow: 0 0 30px rgba(0,0,0,0.5);
         }
 
+        /* Top nav bar */
+        .top-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 960px;
+            margin: 0 auto 18px auto;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        .top-nav a {
+            color: var(--accent);
+            text-decoration: none;
+            font-size: 0.92em;
+            padding: 7px 16px;
+            border-radius: 6px;
+            border: 1px solid var(--accent);
+            transition: background 0.2s, color 0.2s;
+            white-space: nowrap;
+        }
+        .top-nav a:hover {
+            background: var(--accent);
+            color: #fff;
+        }
+        .top-nav .nav-title {
+            font-weight: 600;
+            font-size: 0.95em;
+            color: var(--text-secondary);
+        }
+
         @media (max-width: 600px) {
             body { padding: 10px; }
             .page-header { flex-direction: column; gap: 12px; text-align: center; }
@@ -336,6 +367,10 @@
     </style>
 </head>
 <body>
+    <div class="top-nav">
+        <span class="nav-title">&#128203; Feedback Management System</span>
+        <a href="report.html" id="nav-report-issue">+ Report New Issue</a>
+    </div>
     <div class="container">
         <div class="page-header">
             <div style="display:flex;align-items:center;">
@@ -355,7 +390,6 @@
 
         <div class="footer-links">
             <a href="report.html">Report New Issue</a>
-            <a href="index.html">Back to Home</a>
         </div>
     </div>
 
