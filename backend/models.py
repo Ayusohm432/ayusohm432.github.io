@@ -11,6 +11,20 @@ class Project(Base):
     tech_stack = Column(String) 
     github_link = Column(String)
     live_demo = Column(String)
+    report_link = Column(String)
+
+class CommonIssue(Base):
+    __tablename__ = "common_issues"
+
+    id = Column(Integer, primary_key=True, index=True)
+    report_type = Column(String)
+    name = Column(String)
+    email = Column(String)
+    page_feature = Column(String)
+    issue = Column(Text)
+    steps = Column(Text)
+    screenshots = Column(Text)
+    created_at = Column(DateTime, default=datetime.datetime.utcnow)
 
 class BugReport(Base):
     __tablename__ = "bug_reports"

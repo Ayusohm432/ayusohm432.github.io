@@ -222,6 +222,12 @@ const IssueListing = () => {
               <LogOut className="w-4 h-4" /> Logout
             </button>
             <Link
+              to="/common-issues"
+              className="flex items-center gap-1.5 text-sm text-cyan-400 border border-cyan-500/40 px-4 py-2 rounded-xl hover:bg-cyan-500/10 transition-colors"
+            >
+              <ShieldAlert className="w-4 h-4" /> Global Issues
+            </Link>
+            <Link
               to="/"
               className="flex items-center gap-1.5 text-sm text-primary border border-primary/40 px-4 py-2 rounded-xl hover:bg-primary/10 transition-colors"
             >

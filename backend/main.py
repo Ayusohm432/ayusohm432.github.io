@@ -16,6 +16,12 @@ import time
 import threading
 import requests
 import logging
+import re
+
+def slugify(text: str) -> str:
+    text = text.lower()
+    text = re.sub(r'[^a-z0-9]+', '-', text)
+    return text.strip('-')
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -91,6 +97,31 @@ def create_bug_report(bug: schemas.BugReportCreate, db: Session = Depends(get_db
 @app.get("/bug-reports", response_model=List[schemas.BugReport])
 def get_bug_reports(db: Session = Depends(get_db), token: str = Depends(verify_admin)):
     return db.query(models.BugReport).order_by(models.BugReport.created_at.desc()).all()
+
+@app.post("/common-issues", response_model=schemas.CommonIssue)
+def create_common_issue(issue: schemas.CommonIssueCreate, db: Session = Depends(get_db)):
+    db_issue = models.CommonIssue(**issue.model_dump())
+    db.add(db_issue)
+    db.commit()
+    db.refresh(db_issue)
+    return db_issue
+
+@app.get("/common-issues", response_model=List[schemas.CommonIssue])
+def get_common_issues(db: Session = Depends(get_db), token: str = Depends(verify_admin)):
+    return db.query(models.CommonIssue).order_by(models.CommonIssue.created_at.desc()).all()
+
+@app.post("/projects/{project_id}/generate-link", response_model=schemas.Project)
+def generate_project_link(project_id: int, db: Session = Depends(get_db), token: str = Depends(verify_admin)):
+    project = db.query(models.Project).filter(models.Project.id == project_id).first()
+    if not project:
+        raise HTTPException(status_code=404, detail="Project not found")
+    
+    slug = slugify(project.title)
+    # Target structure defined by user: ayusohm432.github.io/[slug]/report
+    project.report_link = f"ayusohm432.github.io/{slug}/report"
+    db.commit()
+    db.refresh(project)
+    return project
 
 @app.post("/feedback", response_model=schemas.Feedback)
 def create_feedback(feedback: schemas.FeedbackCreate, db: Session = Depends(get_db)):

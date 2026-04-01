@@ -18,6 +18,8 @@ import ProjectsPage from './pages/ProjectsPage';
 import ProtectedRoute from './components/ProtectedRoute';
 import AdminLogin from './pages/AdminLogin';
 import ProjectUpload from './pages/ProjectUpload';
+import Report from './pages/Report';
+import CommonIssue from './pages/CommonIssue';
 
 function Portfolio() {
   const [scrollY, setScrollY] = useState(0);
@@ -65,7 +67,10 @@ function App() {
       <Routes>
         <Route path="/*" element={<Portfolio />} />
         <Route path="/login" element={<AdminLogin />} />
+        <Route path="/report" element={<Report />} />
+        <Route path="/:projectSlug/report" element={<Report />} />
         <Route path="/issues" element={<ProtectedRoute><IssueListing /></ProtectedRoute>} />
+        <Route path="/common-issues" element={<ProtectedRoute><CommonIssue /></ProtectedRoute>} />
         <Route path="/upload" element={<ProtectedRoute><ProjectUpload /></ProtectedRoute>} />
         <Route path="/admin" element={<AdminDashboard />} />
         <Route path="/projects" element={<ProjectsPage />} />

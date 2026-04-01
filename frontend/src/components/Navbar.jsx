@@ -44,6 +44,10 @@ const Navbar = () => {
               <span className="absolute -bottom-1 left-0 w-0 h-[2px] bg-gradient-to-r from-primary to-secondary transition-all group-hover:w-full"></span>
             </a>
           ))}
+          <Link to="/report" className="text-red-400 hover:text-red-300 transition-all text-sm font-medium uppercase tracking-wider relative group flex items-center gap-1.5 ml-4">
+            <ShieldAlert className="w-4 h-4" /> Report
+            <span className="absolute -bottom-1 left-0 w-0 h-[2px] bg-red-500 transition-all group-hover:w-full"></span>
+          </Link>
           <a href="/#resume" className="px-5 py-2 rounded-full border border-primary/50 text-primary hover:bg-primary/10 transition-colors font-medium text-sm ml-4">
             Resume
           </a>
@@ -82,6 +86,12 @@ const Navbar = () => {
                 </motion.a>
               ))}
               
+              <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.4 }}>
+                <Link to="/report" onClick={() => setIsOpen(false)} className="text-2xl font-extrabold uppercase tracking-widest text-red-500 flex items-center justify-center gap-3 py-2">
+                  <ShieldAlert className="w-6 h-6" /> Report Issue
+                </Link>
+              </motion.div>
+
               <div className="w-16 h-[2px] bg-white/10 my-4 rounded-full"></div>
 
               <motion.a 

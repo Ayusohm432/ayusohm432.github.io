@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { UploadCloud, ExternalLink, Github, Layers, Loader2, CheckCircle2, LogOut } from 'lucide-react';
+import { UploadCloud, ExternalLink, Github, Layers, Loader2, CheckCircle2, LogOut, Copy, RefreshCw } from 'lucide-react';
 import { useNavigate, Link } from 'react-router-dom';
 import axios from 'axios';
 
@@ -17,10 +17,27 @@ const INITIAL = {
 const ProjectUpload = () => {
   const [form, setForm] = useState(INITIAL);
   const [status, setStatus] = useState('idle'); // idle | loading | success | error
+  const [projects, setProjects] = useState([]);
+  const [fetching, setFetching] = useState(true);
 
   const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
 
   const navigate = useNavigate();
+
+  const fetchProjects = async () => {
+    try {
+      const res = await axios.get(`${API_URL}/projects`);
+      setProjects(res.data);
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setFetching(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchProjects();
+  }, []);
 
   const set = (e) => setForm((p) => ({ ...p, [e.target.name]: e.target.value }));
 
@@ -36,6 +53,7 @@ const ProjectUpload = () => {
       });
       
       setStatus('success');
+      fetchProjects();
       setTimeout(() => {
         setStatus('idle');
         setForm(INITIAL);
@@ -45,6 +63,20 @@ const ProjectUpload = () => {
       console.error(err);
       setStatus('error');
       setTimeout(() => setStatus('idle'), 3000);
+    }
+  };
+
+  const handleGenerateLink = async (projectId) => {
+    try {
+      const token = localStorage.getItem('adminToken');
+      const res = await axios.post(`${API_URL}/projects/${projectId}/generate-link`, {}, {
+        headers: { 'X-Admin-Token': token }
+      });
+      // Update local state with the new link
+      setProjects(prev => prev.map(p => p.id === projectId ? { ...p, report_link: res.data.report_link } : p));
+    } catch (err) {
+      console.error(err);
+      alert("Failed to generate custom link. Ensure your session is authenticated.");
     }
   };
 
@@ -133,9 +165,56 @@ const ProjectUpload = () => {
               {status === 'success' && <><CheckCircle2 className="w-5 h-5"/> Uploaded Fast & Securely!</>}
               {status === 'error' && 'Failed — Are you authenticated?'}
             </button>
-
           </form>
         </motion.div>
+
+        {/* ── Active Projects Tracking ── */}
+        <div className="mt-16">
+           <h2 className="text-2xl font-bold text-white mb-6">Database Clusters</h2>
+           
+           {fetching ? (
+             <div className="text-gray-500 py-10 flex flex-col items-center">
+               <Loader2 className="w-6 h-6 animate-spin mb-3" /> Syncing Active Architectures...
+             </div>
+           ) : projects.length === 0 ? (
+             <div className="glass border border-white/10 rounded-2xl p-8 text-center text-gray-400">
+               No portfolios initialized inside the Supabase network.
+             </div>
+           ) : (
+             <div className="grid gap-4">
+                {projects.map(proj => (
+                  <div key={proj.id} className="glass border border-white/10 rounded-2xl p-5 flex flex-col md:flex-row md:items-center justify-between gap-5">
+                     <div>
+                        <h3 className="font-bold text-lg text-white mb-1 tracking-tight">{proj.title}</h3>
+                        <p className="text-xs text-secondary font-mono bg-secondary/10 px-2 py-0.5 rounded border border-secondary/20 inline-block">{proj.tech_stack}</p>
+                     </div>
+                     
+                     <div className="flex flex-col sm:flex-row sm:items-center gap-3 w-full md:w-auto">
+                        {proj.report_link ? (
+                           <div className="flex items-center gap-2 bg-white/5 border border-white/10 rounded-xl px-4 py-2 flex-grow overflow-hidden">
+                              <span className="text-xs font-mono text-gray-400 truncate max-w-[200px]">{proj.report_link}</span>
+                              <button onClick={() => navigator.clipboard.writeText(`https://${proj.report_link}`)} className="ml-auto text-primary hover:text-white transition-colors" title="Copy to clipboard">
+                                 <Copy className="w-4 h-4" />
+                              </button>
+                           </div>
+                        ) : (
+                           <div className="text-xs text-gray-500 italic px-4 py-2 border border-dashed border-white/10 rounded-xl text-center">
+                              No URL generated
+                           </div>
+                        )}
+                        <button 
+                           onClick={() => handleGenerateLink(proj.id)}
+                           className="whitespace-nowrap flex items-center justify-center gap-1.5 px-4 py-2.5 bg-primary/20 hover:bg-primary/30 text-primary border border-primary/40 hover:border-primary border-opacity-50 rounded-xl text-xs font-bold uppercase tracking-wider transition-all"
+                        >
+                           <RefreshCw className="w-3.5 h-3.5" /> Generate Link
+                        </button>
+                     </div>
+                  </div>
+                ))}
+             </div>
+           )}
+        </div>
+
       </div>
     </div>
   );

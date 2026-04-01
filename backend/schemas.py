@@ -8,6 +8,25 @@ class ProjectBase(BaseModel):
     tech_stack: str
     github_link: Optional[str] = None
     live_demo: Optional[str] = None
+    report_link: Optional[str] = None
+
+class CommonIssueBase(BaseModel):
+    report_type: str
+    name: Optional[str] = None
+    email: Optional[str] = None
+    page_feature: str
+    issue: str
+    steps: Optional[str] = None
+    screenshots: Optional[str] = None
+
+class CommonIssueCreate(CommonIssueBase):
+    pass
+
+class CommonIssue(CommonIssueBase):
+    id: int
+    created_at: datetime
+    class Config:
+        from_attributes = True
 
 class ProjectCreate(ProjectBase):
     pass
