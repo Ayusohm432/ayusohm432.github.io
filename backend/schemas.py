@@ -94,3 +94,76 @@ class ContactMessage(ContactMessageBase):
     created_at: datetime
     class Config:
         from_attributes = True
+
+# --- CMS SCHEMAS ---
+
+class HeaderBase(BaseModel):
+    name: str
+    title: str
+    tagline: str
+    github_link: Optional[str] = None
+    linkedin_link: Optional[str] = None
+
+class Header(HeaderBase):
+    id: int
+    class Config:
+        from_attributes = True
+
+class AboutBase(BaseModel):
+    bio: str
+    institution: str
+    highlights: str
+
+class About(AboutBase):
+    id: int
+    class Config:
+        from_attributes = True
+
+class SkillBase(BaseModel):
+    category: str
+    name: str
+    level: int
+
+class Skill(SkillBase):
+    id: int
+    class Config:
+        from_attributes = True
+
+class ExperienceBase(BaseModel):
+    role: str
+    company: str
+    date_period: str
+    description: str
+
+class Experience(ExperienceBase):
+    id: int
+    class Config:
+        from_attributes = True
+
+class EducationBase(BaseModel):
+    degree: str
+    institution: str
+    date_period: str
+    description: str
+
+class Education(EducationBase):
+    id: int
+    class Config:
+        from_attributes = True
+
+class AchievementBase(BaseModel):
+    icon: str
+    text: str
+
+class Achievement(AchievementBase):
+    id: int
+    class Config:
+        from_attributes = True
+
+class ResumeBase(BaseModel):
+    drive_link: str
+
+class Resume(ResumeBase):
+    id: int
+    class Config:
+        from_attributes = True

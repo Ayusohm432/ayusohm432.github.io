@@ -64,3 +64,53 @@ class ContactMessage(Base):
     email = Column(String)
     message = Column(Text)
     created_at = Column(DateTime, default=datetime.datetime.utcnow)
+
+class Header(Base):
+    __tablename__ = "header"
+    id = Column(Integer, primary_key=True, index=True)
+    name = Column(String)
+    title = Column(String)
+    tagline = Column(Text)
+    github_link = Column(String)
+    linkedin_link = Column(String)
+
+class About(Base):
+    __tablename__ = "about"
+    id = Column(Integer, primary_key=True, index=True)
+    bio = Column(Text)
+    institution = Column(String)
+    highlights = Column(Text) # JSON string of highlights
+
+class Skill(Base):
+    __tablename__ = "skills"
+    id = Column(Integer, primary_key=True, index=True)
+    category = Column(String)
+    name = Column(String)
+    level = Column(Integer)
+
+class Experience(Base):
+    __tablename__ = "experience"
+    id = Column(Integer, primary_key=True, index=True)
+    role = Column(String)
+    company = Column(String)
+    date_period = Column(String)
+    description = Column(Text)
+
+class Education(Base):
+    __tablename__ = "education"
+    id = Column(Integer, primary_key=True, index=True)
+    degree = Column(String)
+    institution = Column(String)
+    date_period = Column(String)
+    description = Column(Text)
+
+class Achievement(Base):
+    __tablename__ = "achievements"
+    id = Column(Integer, primary_key=True, index=True)
+    icon = Column(String)
+    text = Column(String)
+
+class Resume(Base):
+    __tablename__ = "resume"
+    id = Column(Integer, primary_key=True, index=True)
+    drive_link = Column(String)

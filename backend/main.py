@@ -3,13 +3,21 @@ from sqlalchemy.orm import Session
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 import models, schemas
-from database import engine, get_db
+from database import engine, get_db, SessionLocal
 from typing import List
 from dotenv import load_dotenv
+import seeder
+
 load_dotenv()
 
 # Create DB tables
 models.Base.metadata.create_all(bind=engine)
+
+db_init = SessionLocal()
+try:
+    seeder.seed_cms_data(db_init)
+finally:
+    db_init.close()
 
 import os
 import time
@@ -158,3 +166,120 @@ def create_contact(contact: schemas.ContactMessageCreate, db: Session = Depends(
 @app.get("/contacts", response_model=List[schemas.ContactMessage])
 def get_contacts(db: Session = Depends(get_db)):
     return db.query(models.ContactMessage).order_by(models.ContactMessage.created_at.desc()).all()
+
+# --- CMS ENDPOINTS ---
+
+@app.get("/header", response_model=schemas.Header)
+def get_header(db: Session = Depends(get_db)):
+    return db.query(models.Header).first()
+
+@app.put("/header", response_model=schemas.Header)
+def update_header(header: schemas.HeaderBase, db: Session = Depends(get_db), token: str = Depends(verify_admin)):
+    db_header = db.query(models.Header).first()
+    for k, v in header.model_dump().items():
+        setattr(db_header, k, v)
+    db.commit()
+    db.refresh(db_header)
+    return db_header
+
+@app.get("/about", response_model=schemas.About)
+def get_about(db: Session = Depends(get_db)):
+    return db.query(models.About).first()
+
+@app.put("/about", response_model=schemas.About)
+def update_about(about: schemas.AboutBase, db: Session = Depends(get_db), token: str = Depends(verify_admin)):
+    db_about = db.query(models.About).first()
+    for k, v in about.model_dump().items():
+        setattr(db_about, k, v)
+    db.commit()
+    db.refresh(db_about)
+    return db_about
+
+@app.get("/resume", response_model=schemas.Resume)
+def get_resume(db: Session = Depends(get_db)):
+    return db.query(models.Resume).first()
+
+@app.put("/resume", response_model=schemas.Resume)
+def update_resume(resume: schemas.ResumeBase, db: Session = Depends(get_db), token: str = Depends(verify_admin)):
+    db_resume = db.query(models.Resume).first()
+    for k, v in resume.model_dump().items():
+        setattr(db_resume, k, v)
+    db.commit()
+    db.refresh(db_resume)
+    return db_resume
+
+# --- SKILLS ---
+@app.get("/skills", response_model=List[schemas.Skill])
+def get_skills(db: Session = Depends(get_db)):
+    return db.query(models.Skill).all()
+
+@app.post("/skills", response_model=schemas.Skill)
+def add_skill(skill: schemas.SkillBase, db: Session = Depends(get_db), token: str = Depends(verify_admin)):
+    db_skill = models.Skill(**skill.model_dump())
+    db.add(db_skill)
+    db.commit()
+    db.refresh(db_skill)
+    return db_skill
+
+@app.delete("/skills/{id}")
+def delete_skill(id: int, db: Session = Depends(get_db), token: str = Depends(verify_admin)):
+    db.query(models.Skill).filter(models.Skill.id == id).delete()
+    db.commit()
+    return {"status": "deleted"}
+
+# --- EXPERIENCE ---
+@app.get("/experiences", response_model=List[schemas.Experience])
+def get_experiences(db: Session = Depends(get_db)):
+    return db.query(models.Experience).all()
+
+@app.post("/experiences", response_model=schemas.Experience)
+def add_experience(exp: schemas.ExperienceBase, db: Session = Depends(get_db), token: str = Depends(verify_admin)):
+    db_exp = models.Experience(**exp.model_dump())
+    db.add(db_exp)
+    db.commit()
+    db.refresh(db_exp)
+    return db_exp
+
+@app.delete("/experiences/{id}")
+def delete_experience(id: int, db: Session = Depends(get_db), token: str = Depends(verify_admin)):
+    db.query(models.Experience).filter(models.Experience.id == id).delete()
+    db.commit()
+    return {"status": "deleted"}
+
+# --- EDUCATION ---
+@app.get("/educations", response_model=List[schemas.Education])
+def get_educations(db: Session = Depends(get_db)):
+    return db.query(models.Education).all()
+
+@app.post("/educations", response_model=schemas.Education)
+def add_education(edu: schemas.EducationBase, db: Session = Depends(get_db), token: str = Depends(verify_admin)):
+    db_edu = models.Education(**edu.model_dump())
+    db.add(db_edu)
+    db.commit()
+    db.refresh(db_edu)
+    return db_edu
+
+@app.delete("/educations/{id}")
+def delete_education(id: int, db: Session = Depends(get_db), token: str = Depends(verify_admin)):
+    db.query(models.Education).filter(models.Education.id == id).delete()
+    db.commit()
+    return {"status": "deleted"}
+
+# --- ACHIEVEMENTS ---
+@app.get("/achievements", response_model=List[schemas.Achievement])
+def get_achievements(db: Session = Depends(get_db)):
+    return db.query(models.Achievement).all()
+
+@app.post("/achievements", response_model=schemas.Achievement)
+def add_achievement(ach: schemas.AchievementBase, db: Session = Depends(get_db), token: str = Depends(verify_admin)):
+    db_ach = models.Achievement(**ach.model_dump())
+    db.add(db_ach)
+    db.commit()
+    db.refresh(db_ach)
+    return db_ach
+
+@app.delete("/achievements/{id}")
+def delete_achievement(id: int, db: Session = Depends(get_db), token: str = Depends(verify_admin)):
+    db.query(models.Achievement).filter(models.Achievement.id == id).delete()
+    db.commit()
+    return {"status": "deleted"}
