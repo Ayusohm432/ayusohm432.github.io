@@ -60,7 +60,7 @@ const Hero = () => {
           <div className="absolute inset-0 rounded-full border border-primary/30 animate-[spin_10s_linear_infinite]"></div>
           <div className="absolute inset-4 rounded-full border border-secondary/30 animate-[spin_15s_linear_infinite_reverse]"></div>
           <motion.div animate={{ y: [0, -15, 0] }} transition={{ repeat: Infinity, duration: 4, ease: "easeInOut" }} className="absolute inset-8 rounded-full overflow-hidden glass border-2 border-white/10 z-10 flex items-center justify-center bg-surface">
-             <img src="/favicon.png" alt="Profile Vector" className="w-full h-full object-cover" />
+             <img src={data?.profile_image || '/favicon.png'} alt="Profile" className="w-full h-full object-cover" />
           </motion.div>
         </div>
       </motion.div>

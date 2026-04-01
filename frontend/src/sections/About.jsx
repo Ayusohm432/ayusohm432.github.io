@@ -35,7 +35,7 @@ const About = () => {
             </p>
 
             <div className="flex flex-wrap gap-3 pt-6 pl-5 md:pl-0">
-              <a href="mailto:example@gmail.com" className="flex items-center gap-2 px-5 py-2.5 rounded-full glass border border-white/5 hover:border-primary/40 hover:bg-primary/10 transition-all text-sm text-gray-300 font-medium group">
+              <a href={`mailto:${header?.email || 'example@gmail.com'}`} className="flex items-center gap-2 px-5 py-2.5 rounded-full glass border border-white/5 hover:border-primary/40 hover:bg-primary/10 transition-all text-sm text-gray-300 font-medium group">
                 <Mail className="w-4 h-4 text-primary group-hover:scale-110 transition-transform" /> Email Me
               </a>
               {header?.linkedin_link && (

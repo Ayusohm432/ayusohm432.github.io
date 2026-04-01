@@ -164,6 +164,23 @@ def generate_project_link(project_id: int, db: Session = Depends(get_db), token:
     db.refresh(project)
     return project
 
+@app.put("/projects/{project_id}", response_model=schemas.Project)
+def update_project(project_id: int, project_update: schemas.ProjectCreate, db: Session = Depends(get_db), token: str = Depends(verify_admin)):
+    db_project = db.query(models.Project).filter(models.Project.id == project_id).first()
+    if not db_project:
+        raise HTTPException(status_code=404, detail="Project not found")
+    for k, v in project_update.model_dump().items():
+        setattr(db_project, k, v)
+    db.commit()
+    db.refresh(db_project)
+    return db_project
+
+@app.delete("/projects/{project_id}")
+def delete_project(project_id: int, db: Session = Depends(get_db), token: str = Depends(verify_admin)):
+    db.query(models.Project).filter(models.Project.id == project_id).delete()
+    db.commit()
+    return {"status": "deleted"}
+
 @app.post("/feedback", response_model=schemas.Feedback)
 def create_feedback(feedback: schemas.FeedbackCreate, db: Session = Depends(get_db)):
     db_feedback = models.Feedback(**feedback.model_dump())

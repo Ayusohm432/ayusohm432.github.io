@@ -67,10 +67,7 @@ function App() {
       <Routes>
         <Route path="/*" element={<Portfolio />} />
         <Route path="/login" element={<AdminLogin />} />
-        <Route path="/report" element={<Report />} />
-        <Route path="/report/:projectSlug" element={<Report />} />
-        <Route path="/report" element={<Report />} />
-        <Route path="/report/:projectSlug" element={<Report />} />
+        <Route path="/report/:projectSlug?" element={<Report />} />
         <Route path="/admin" element={<ProtectedRoute><AdminDashboard /></ProtectedRoute>} />
         <Route path="/projects" element={<ProjectsPage />} />
       </Routes>

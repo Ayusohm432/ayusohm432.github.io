@@ -4,14 +4,22 @@ import json
 
 def seed_cms_data(db: Session):
     # Header
-    if db.query(models.Header).count() == 0:
+    header = db.query(models.Header).first()
+    if not header:
         db.add(models.Header(
             name="Ayush Kumar",
             title="Full-Stack Developer",
             tagline="I'm a Computer Science & Engineering student at GCE, passionate about creating interactive, modern, and scalable web applications.",
+            email="ayusohm432@gmail.com",
+            profile_image="/favicon.png",
             github_link="https://github.com/Ayusohm432",
             linkedin_link="https://linkedin.com/in/ayusohm432"
         ))
+    else:
+        # Patch missing fields for existing users
+        if not header.email: header.email = "ayusohm432@gmail.com"
+        if not header.profile_image: header.profile_image = "/favicon.png"
+    db.commit()
 
     # About
     if db.query(models.About).count() == 0:

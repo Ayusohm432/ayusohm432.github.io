@@ -71,6 +71,8 @@ class Header(Base):
     name = Column(String)
     title = Column(String)
     tagline = Column(Text)
+    email = Column(String)
+    profile_image = Column(String)
     github_link = Column(String)
     linkedin_link = Column(String)
 

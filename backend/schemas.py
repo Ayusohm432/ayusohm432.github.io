@@ -101,6 +101,8 @@ class HeaderBase(BaseModel):
     name: str
     title: str
     tagline: str
+    email: Optional[str] = None
+    profile_image: Optional[str] = None
     github_link: Optional[str] = None
     linkedin_link: Optional[str] = None
 

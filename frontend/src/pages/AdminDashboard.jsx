@@ -176,8 +176,13 @@ const AdminDashboard = () => {
   const fetchAll = useCallback(async () => {
     setLoading(true);
     try {
-      const endpoints = ['header', 'about', 'resume', 'skills', 'experiences', 'educations', 'achievements', 'feedbacks', 'contacts'];
-      const responses = await Promise.all(endpoints.map(ep => axios.get(`${API_URL}/${ep}`).catch(() => ({ data: null }))));
+      const token = localStorage.getItem('adminToken');
+      const endpoints = ['header', 'about', 'resume', 'skills', 'experiences', 'educations', 'achievements', 'feedbacks', 'contacts', 'projects'];
+      const responses = await Promise.all(endpoints.map(ep => 
+        axios.get(`${API_URL}/${ep}`, { 
+           headers: { 'X-Admin-Token': token } 
+        }).catch(() => ({ data: null }))
+      ));
       
       const newData = {};
       endpoints.forEach((ep, i) => newData[ep] = responses[i].data);
@@ -288,6 +293,7 @@ const AdminDashboard = () => {
               <>
                 <SingletonForm title="Hero Configuration (Header)" endpoint="header" data={data.header} onSave={fetchAll} fields={[
                   { name: 'name', label: 'Full Name' }, { name: 'title', label: 'Primary Title' },
+                  { name: 'email', label: 'Contact Email' }, { name: 'profile_image', label: 'Profile Image URL' },
                   { name: 'github_link', label: 'GitHub URL' }, { name: 'linkedin_link', label: 'LinkedIn URL' },
                   { name: 'tagline', label: 'Tagline / Short Bio', type: 'textarea' }
                 ]} />
