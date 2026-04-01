@@ -22,9 +22,6 @@ const About = () => {
             <p className="pl-5 md:pl-0">
               My journey spans <span className="text-secondary font-medium px-2 py-0.5 rounded-md bg-secondary/10 border border-secondary/20">Full-Stack Web Development</span> (React, FastAPI, PHP), <span className="text-accent font-medium px-2 py-0.5 rounded-md bg-accent/10 border border-accent/20">Android Development</span>, and AI/ML exposure through data annotation and research. I blend strong system-level thinking with beautiful, user-first interfaces.
             </p>
-            <p className="pl-5 md:pl-0">
-              When not building software, I write technical articles on <a href="https://hashnode.com" target="_blank" rel="noreferrer" className="text-primary hover:text-white transition-colors font-medium">Hashnode</a> and contribute to open-source projects.
-            </p>
 
             {/* Contact row formatted as modern badges */}
             <div className="flex flex-wrap gap-3 pt-6 pl-5 md:pl-0">
