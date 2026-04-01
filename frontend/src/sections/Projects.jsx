@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { ExternalLink, Github, BugPlay, MessageSquare } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { ExternalLink, Github, BugPlay, MessageSquare, ArrowRight } from 'lucide-react';
 import axios from 'axios';
 import BugReportModal from '../components/modals/BugReportModal';
 import FeedbackModal from '../components/modals/FeedbackModal';
 
-const Projects = () => {
+const Projects = ({ limit, showViewMore = false }) => {
   const [projects, setProjects] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -112,8 +113,9 @@ const Projects = () => {
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
         </div>
       ) : (
-        <div className="grid md:grid-cols-2 gap-8 max-w-6xl mx-auto">
-          {projects.map((project, index) => (
+        <>
+          <div className="grid md:grid-cols-2 gap-8 max-w-6xl mx-auto">
+            {projects.slice(0, limit || projects.length).map((project, index) => (
             <motion.div
               key={project.id || index}
               initial={{ opacity: 0, scale: 0.95 }}
@@ -172,6 +174,16 @@ const Projects = () => {
             </motion.div>
           ))}
         </div>
+
+        {showViewMore && projects.length > (limit || 0) && (
+          <div className="mt-16 flex justify-center">
+            <Link to="/projects" className="inline-flex items-center gap-2 px-8 py-4 bg-primary text-black rounded-lg font-bold hover:bg-primary/90 transition-colors group">
+              View Entire Collection
+              <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+            </Link>
+          </div>
+        )}
+      </>
       )}
 
       {/* Interactive Modals */}

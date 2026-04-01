@@ -8,11 +8,11 @@ const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
 
   const navItems = [
-    { name: 'About', href: '#about' },
-    { name: 'Skills', href: '#skills' },
-    { name: 'Projects', href: '#projects' },
-    { name: 'Achievements', href: '#achievements' },
-    { name: 'Contact', href: '#contact' },
+    { name: 'About', href: '/#about' },
+    { name: 'Skills', href: '/#skills' },
+    { name: 'Projects', href: '/#projects' },
+    { name: 'Achievements', href: '/#achievements' },
+    { name: 'Contact', href: '/#contact' },
   ];
 
   useEffect(() => {
@@ -27,10 +27,10 @@ const Navbar = () => {
     <nav className={`fixed w-full z-40 transition-all duration-300 ${isScrolled ? 'glass py-3' : 'bg-transparent py-5'}`}>
       <div className="container mx-auto px-6 sm:px-12 flex justify-between items-center">
         {/* Logo */}
-        <a href="#" className="flex items-center gap-2 text-2xl font-bold tracking-tighter">
+        <Link to="/" className="flex items-center gap-2 text-2xl font-bold tracking-tighter">
           <Code2 className="text-primary w-8 h-8" />
           <span className="text-white hover:text-gradient transition-all duration-300">Ayush<span className="text-primary">.dev</span></span>
-        </a>
+        </Link>
 
         {/* Desktop Nav */}
         <div className="hidden md:flex items-center space-x-8">
@@ -44,7 +44,7 @@ const Navbar = () => {
               <span className="absolute -bottom-1 left-0 w-0 h-[2px] bg-gradient-to-r from-primary to-secondary transition-all group-hover:w-full"></span>
             </a>
           ))}
-          <a href="#resume" className="px-5 py-2 rounded-full border border-primary/50 text-primary hover:bg-primary/10 transition-colors font-medium text-sm ml-4">
+          <a href="/#resume" className="px-5 py-2 rounded-full border border-primary/50 text-primary hover:bg-primary/10 transition-colors font-medium text-sm ml-4">
             Resume
           </a>
           {/* Private issue board link — subtle */}
@@ -81,7 +81,7 @@ const Navbar = () => {
                 {item.name}
               </a>
             ))}
-            <a href="#resume" onClick={() => setIsOpen(false)} className="px-6 py-3 rounded-full bg-primary/20 text-primary border border-primary/50 font-medium">
+            <a href="/#resume" onClick={() => setIsOpen(false)} className="px-6 py-3 rounded-full bg-primary/20 text-primary border border-primary/50 font-medium">
               View Resume
             </a>
             <Link to="/issues" onClick={() => setIsOpen(false)} className="flex items-center gap-1.5 text-sm text-red-400/70 border border-red-500/30 px-4 py-2 rounded-full hover:text-red-400 transition-colors font-mono">

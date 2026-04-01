@@ -14,6 +14,7 @@ import BlobBackground from './components/BlobBackground';
 import CustomCursor from './components/CustomCursor';
 import IssueListing from './pages/IssueListing';
 import AdminDashboard from './pages/AdminDashboard';
+import ProjectsPage from './pages/ProjectsPage';
 
 function Portfolio() {
   const [scrollY, setScrollY] = useState(0);
@@ -43,7 +44,7 @@ function Portfolio() {
         <Hero />
         <About />
         <Skills />
-        <Projects />
+        <Projects limit={2} showViewMore={true} />
         <Achievements />
         <Resume />
         <GithubStats />
@@ -62,6 +63,7 @@ function App() {
         <Route path="/*" element={<Portfolio />} />
         <Route path="/issues" element={<IssueListing />} />
         <Route path="/admin" element={<AdminDashboard />} />
+        <Route path="/projects" element={<ProjectsPage />} />
       </Routes>
     </Router>
   );
