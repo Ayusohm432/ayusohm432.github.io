@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { ExternalLink, Github, BugPlay, MessageSquare, ArrowRight } from 'lucide-react';
 import axios from 'axios';
+import { dummyData } from '../data/dummyData';
 import BugReportModal from '../components/modals/BugReportModal';
 import FeedbackModal from '../components/modals/FeedbackModal';
 
@@ -21,68 +22,10 @@ const Projects = ({ limit, showViewMore = false }) => {
     const fetchProjects = async () => {
       try {
         const response = await axios.get(`${API_URL}/projects`);
-        setProjects(response.data);
+        setProjects(response.data && response.data.length > 0 ? response.data : dummyData.projects);
       } catch (error) {
         console.error('Error fetching projects:', error);
-        // Fallback static data if backend is not reachable
-        setProjects([
-          {
-            id: 1,
-            title: "Feedback Management System",
-            description: "A full-stack web application for collecting and managing academic feedback efficiently, featuring interactive dashboards.",
-            tech_stack: "PHP, MySQL, JavaScript",
-            github_link: "https://github.com/Ayusohm432/Feedback-Management-System",
-            live_demo: "https://ayusohm432.github.io/Feedback-Management-System/"
-          },
-          {
-            id: 2,
-            title: "AI Skills Gap Analyzer",
-            description: "An intelligent career development platform designed to help students understand industry skill requirements and prepare effectively for technical roles.",
-            tech_stack: "JavaScript, HTML, CSS",
-            github_link: "https://github.com/Ayusohm432/AI-Skills-Gap-Analyzer",
-            live_demo: "https://ayusohm432.github.io/AI-Skills-Gap-Analyzer/"
-          },
-          {
-            id: 3,
-            title: "AgenticGoKit",
-            description: "Open-source Agentic AI framework in Go for building, orchestrating, and deploying intelligent agents. LLM-agnostic and event-driven.",
-            tech_stack: "Go, AI Agents",
-            github_link: "https://github.com/Ayusohm432/AgenticGoKit",
-            live_demo: "#"
-          },
-          {
-            id: 4,
-            title: "StegoShield",
-            description: "Advanced steganography application for secure message hiding and extraction using modern cryptographic techniques.",
-            tech_stack: "Python, Security",
-            github_link: "https://github.com/Ayusohm432/StegoShield",
-            live_demo: "#"
-          },
-          {
-            id: 5,
-            title: "Next-Gen Portfolio",
-            description: "A modern, interactive frontend with a scalable FastAPI backend supporting real-time bug reporting and feedback.",
-            tech_stack: "React, FastAPI, Tailwind CSS, Framer Motion",
-            github_link: "https://github.com/Ayusohm432/ayusohm432.github.io",
-            live_demo: "https://ayusohm432.github.io"
-          },
-          {
-            id: 6,
-            title: "MediSync — Healthcare Management System",
-            description: "A real-time healthcare resource and inventory management system with secure PHP-MySQL backend and responsive UI.",
-            tech_stack: "HTML, CSS, JavaScript, PHP, MySQL",
-            github_link: "https://github.com/Ayusohm432",
-            live_demo: "#"
-          },
-          {
-            id: 7,
-            title: "Predictive Analysis in AI Model Training",
-            description: "Optimization models for AI training using statistical techniques for parameter tuning, error reduction, and model evaluation.",
-            tech_stack: "Python, Machine Learning, Data Science",
-            github_link: "https://github.com/Ayusohm432",
-            live_demo: "#"
-          }
-        ]);
+        setProjects(dummyData.projects);
       } finally {
         setLoading(false);
       }

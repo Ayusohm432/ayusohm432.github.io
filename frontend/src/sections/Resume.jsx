@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { FileDown, ExternalLink } from 'lucide-react';
 import axios from 'axios';
+import { dummyData } from '../data/dummyData';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
 
@@ -11,12 +12,15 @@ const Resume = () => {
 
   useEffect(() => {
     Promise.all([
-       axios.get(`${API_URL}/resume`),
-       axios.get(`${API_URL}/header`)
+       axios.get(`${API_URL}/resume`).catch(()=>({data:null})),
+       axios.get(`${API_URL}/header`).catch(()=>({data:null}))
     ]).then(([resR, resH]) => {
-      setData(resR.data);
-      setHeader(resH.data);
-    }).catch(console.error);
+      setData(resR.data || dummyData.resume);
+      setHeader(resH.data || dummyData.header);
+    }).catch(() => {
+      setData(dummyData.resume);
+      setHeader(dummyData.header);
+    });
   }, []);
 
   const driveLink = data?.drive_link || '/AYUSH KUMAR.pdf';
