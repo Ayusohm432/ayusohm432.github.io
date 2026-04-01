@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Mail, Linkedin, Github } from 'lucide-react';
 import axios from 'axios';
+import { dummyData } from '../data/dummyData';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
 
@@ -14,11 +15,14 @@ const About = () => {
       axios.get(`${API_URL}/about`).catch(()=>({data:null})),
       axios.get(`${API_URL}/header`).catch(()=>({data:null}))
     ]).then(([resA, resH]) => {
-      if (resA.data) {
-         try { resA.data.parsedHighlights = JSON.parse(resA.data.highlights); } catch(e) {}
-         setAbout(resA.data);
+      const aboutData = resA.data || dummyData.about;
+      const headerData = resH.data || dummyData.header;
+
+      if (aboutData) {
+         try { aboutData.parsedHighlights = JSON.parse(aboutData.highlights); } catch(e) {}
+         setAbout(aboutData);
       }
-      if (resH.data) setHeader(resH.data);
+      if (headerData) setHeader(headerData);
     });
   }, []);
 

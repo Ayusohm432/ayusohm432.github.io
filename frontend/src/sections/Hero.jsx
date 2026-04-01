@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Download, ArrowRight } from 'lucide-react';
 import axios from 'axios';
+import { dummyData } from '../data/dummyData';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
 
@@ -10,7 +11,11 @@ const Hero = () => {
   const [text, setText] = useState('');
 
   useEffect(() => {
-    axios.get(`${API_URL}/header`).then(res => setData(res.data)).catch(console.error);
+    axios.get(`${API_URL}/header`).then(res => {
+      setData(res.data || dummyData.header);
+    }).catch(() => {
+      setData(dummyData.header);
+    });
   }, []);
 
   useEffect(() => {

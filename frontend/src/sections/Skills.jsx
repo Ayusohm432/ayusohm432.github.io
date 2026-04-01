@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { motion } from 'framer-motion';
 import axios from 'axios';
+import { dummyData } from '../data/dummyData';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
 
@@ -28,7 +29,11 @@ const Skills = () => {
   const [data, setData] = useState([]);
 
   useEffect(() => {
-    axios.get(`${API_URL}/skills`).then(res => setData(res.data)).catch(console.error);
+    axios.get(`${API_URL}/skills`).then(res => {
+      setData(res.data && res.data.length > 0 ? res.data : dummyData.skills);
+    }).catch(() => {
+      setData(dummyData.skills);
+    });
   }, []);
 
   const categorizedSkills = useMemo(() => {

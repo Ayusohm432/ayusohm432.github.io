@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Award, Briefcase, GraduationCap, Bot } from 'lucide-react';
 import axios from 'axios';
+import { dummyData } from '../data/dummyData';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
 
@@ -11,16 +12,20 @@ const Achievements = () => {
 
   useEffect(() => {
     Promise.all([
-      axios.get(`${API_URL}/experiences`),
-      axios.get(`${API_URL}/educations`),
-      axios.get(`${API_URL}/achievements`)
+      axios.get(`${API_URL}/experiences`).catch(()=>({data:[]})),
+      axios.get(`${API_URL}/educations`).catch(()=>({data:[]})),
+      axios.get(`${API_URL}/achievements`).catch(()=>({data:[]}))
     ]).then(([expRes, eduRes, achRes]) => {
+      let experiences = (expRes.data && expRes.data.length > 0) ? expRes.data : dummyData.experiences;
+      let educations = (eduRes.data && eduRes.data.length > 0) ? eduRes.data : dummyData.educations;
+      let achs = (achRes.data && achRes.data.length > 0) ? achRes.data : dummyData.achievements;
+
       // Map and merge arrays
-      const exps = (expRes.data || []).map(e => ({
+      const exps = (experiences || []).map(e => ({
          role: e.role, org: e.company, date: e.date_period, desc: e.description,
          icon: <Briefcase className="w-6 h-6 text-primary" />, _type: 'exp'
       }));
-      const edus = (eduRes.data || []).map(e => ({
+      const edus = (educations || []).map(e => ({
          role: e.degree, org: e.institution, date: e.date_period, desc: e.description,
          icon: <GraduationCap className="w-6 h-6 text-secondary" />, _type: 'edu'
       }));
@@ -33,8 +38,26 @@ const Achievements = () => {
         if (exps[i]) merged.push(exps[i]);
       }
       setTimeline(merged);
-      setAchievements(achRes.data || []);
-    }).catch(console.error);
+      setAchievements(achs);
+    }).catch(() => {
+        // Fallback for everything if Promise.all hits error
+        const exps = dummyData.experiences.map(e => ({
+            role: e.role, org: e.company, date: e.date_period, desc: e.description,
+            icon: <Briefcase className="w-6 h-6 text-primary" />, _type: 'exp'
+        }));
+        const edus = dummyData.educations.map(e => ({
+            role: e.degree, org: e.institution, date: e.date_period, desc: e.description,
+            icon: <GraduationCap className="w-6 h-6 text-secondary" />, _type: 'edu'
+        }));
+        const merged = [];
+        const len = Math.max(exps.length, edus.length);
+        for(let i=0; i<len; i++) {
+          if (edus[i]) merged.push(edus[i]);
+          if (exps[i]) merged.push(exps[i]);
+        }
+        setTimeline(merged);
+        setAchievements(dummyData.achievements);
+    });
   }, []);
 
   return (
