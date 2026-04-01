@@ -1,5 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
+import { Mail, Linkedin, Github } from 'lucide-react';
 
 const About = () => {
   return (
@@ -15,25 +16,26 @@ const About = () => {
 
         <div className="grid md:grid-cols-2 gap-12 items-center">
           <div className="space-y-6 text-gray-400 leading-relaxed text-lg">
-            <p>
-              I'm a dedicated B.Tech student in Computer Science & Engineering at <span className="text-white font-medium">Gaya College of Engineering</span>. Strong expertise in Data Structures & Algorithms, demonstrated through consistent problem-solving across coding platforms.
+            <p className="border-l-4 border-primary/60 pl-5">
+              I'm a dedicated B.Tech student in Computer Science & Engineering at <span className="text-white font-semibold relative inline-block group">Gaya College of Engineering<span className="absolute -bottom-1 left-0 w-full h-[2px] bg-primary/50 group-hover:bg-primary transition-colors"></span></span>. Strong expertise in Data Structures & Algorithms, demonstrated through consistent problem-solving across coding platforms.
             </p>
-            <p>
-              My journey spans Full-Stack Web Development (React, FastAPI, PHP, MySQL), Android Development with Java, and AI/ML exposure through data annotation and research. I blend strong system-level thinking with beautiful, user-first interfaces.
+            <p className="pl-5 md:pl-0">
+              My journey spans <span className="text-secondary font-medium px-2 py-0.5 rounded-md bg-secondary/10 border border-secondary/20">Full-Stack Web Development</span> (React, FastAPI, PHP), <span className="text-accent font-medium px-2 py-0.5 rounded-md bg-accent/10 border border-accent/20">Android Development</span>, and AI/ML exposure through data annotation and research. I blend strong system-level thinking with beautiful, user-first interfaces.
             </p>
-            <p>
-              When not building software, I write technical articles on <span className="text-white font-medium">Hashnode</span> and contribute to open-source projects.
+            <p className="pl-5 md:pl-0">
+              When not building software, I write technical articles on <a href="https://hashnode.com" target="_blank" rel="noreferrer" className="text-primary hover:text-white transition-colors font-medium">Hashnode</a> and contribute to open-source projects.
             </p>
-            {/* Contact row */}
-            <div className="flex flex-wrap gap-4 pt-2">
-              <a href="mailto:ayushkumar76174@gmail.com" className="flex items-center gap-1.5 text-sm text-primary hover:underline font-mono">
-                📧 ayushkumar76174@gmail.com
+
+            {/* Contact row formatted as modern badges */}
+            <div className="flex flex-wrap gap-3 pt-6 pl-5 md:pl-0">
+              <a href="mailto:ayushkumar76174@gmail.com" className="flex items-center gap-2 px-5 py-2.5 rounded-full glass border border-white/5 hover:border-primary/40 hover:bg-primary/10 transition-all text-sm text-gray-300 font-medium group">
+                <Mail className="w-4 h-4 text-primary group-hover:scale-110 transition-transform" /> Email Me
               </a>
-              <a href="https://linkedin.com/in/ayusohm432" target="_blank" rel="noreferrer" className="flex items-center gap-1.5 text-sm text-primary hover:underline font-mono">
-                🔗 LinkedIn
+              <a href="https://linkedin.com/in/ayusohm432" target="_blank" rel="noreferrer" className="flex items-center gap-2 px-5 py-2.5 rounded-full glass border border-white/5 hover:border-secondary/40 hover:bg-secondary/10 transition-all text-sm text-gray-300 font-medium group">
+                <Linkedin className="w-4 h-4 text-secondary group-hover:scale-110 transition-transform" /> LinkedIn
               </a>
-              <a href="https://github.com/Ayusohm432" target="_blank" rel="noreferrer" className="flex items-center gap-1.5 text-sm text-primary hover:underline font-mono">
-                🐙 GitHub
+              <a href="https://github.com/Ayusohm432" target="_blank" rel="noreferrer" className="flex items-center gap-2 px-5 py-2.5 rounded-full glass border border-white/5 hover:border-accent/40 hover:bg-accent/10 transition-all text-sm text-gray-300 font-medium group">
+                <Github className="w-4 h-4 text-accent group-hover:scale-110 transition-transform" /> GitHub
               </a>
             </div>
           </div>
