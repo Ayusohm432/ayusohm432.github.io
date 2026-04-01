@@ -16,6 +16,9 @@ const BugReportModal = ({ isOpen, onClose, projectName }) => {
   const [status, setStatus] = useState('idle'); // idle | loading | success | error
 
   const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+  const FORMSPREE_BUG_URL = import.meta.env.VITE_FORMSPREE_BUG_URL;
+  const FORMSPREE_FEATURE_URL = import.meta.env.VITE_FORMSPREE_FEATURE_URL;
+
   const isBug = reportType === 'bug';
 
   const set = (e) => setForm((p) => ({ ...p, [e.target.name]: e.target.value }));
@@ -38,7 +41,7 @@ const BugReportModal = ({ isOpen, onClose, projectName }) => {
     const stored = JSON.parse(localStorage.getItem('portfolio_issues') || '[]');
     localStorage.setItem('portfolio_issues', JSON.stringify([...stored, issue]));
 
-    // Fire to backend (best-effort)
+    // Fire to backend (best-effort locally) and Formspree
     try {
       await axios.post(`${API_URL}/bug-report`, {
         project_name: projectName,
@@ -46,6 +49,17 @@ const BugReportModal = ({ isOpen, onClose, projectName }) => {
         description: form.description,
         severity: form.severity,
       });
+
+      const targetUrl = isBug ? FORMSPREE_BUG_URL : FORMSPREE_FEATURE_URL;
+
+      if (targetUrl) {
+        await axios.post(targetUrl, {
+          _subject: `New ${isBug ? 'Bug Report' : 'Feature Request'}: ${projectName}`,
+          type: reportType,
+          ...form,
+          project_name: projectName
+        });
+      }
     } catch (_) { }
 
     setStatus('success');

@@ -99,10 +99,6 @@ const IssueCard = ({ issue, index, onDelete }) => {
                   {[
                     ['Project', issue.project_name],
                     ['Reported by', issue.name ? `${issue.name}${issue.email ? ` (${issue.email})` : ''}` : 'Anonymous'],
-                    ['Role', issue.user_role || 'N/A'],
-                    ['Device', issue.device || 'N/A'],
-                    ['Browser', issue.browser || 'N/A'],
-                    ['Page / Feature', issue.page_feature || 'N/A'],
                     ['Submitted', date],
                   ].map(([label, value]) => (
                     <div key={label}>

@@ -10,6 +10,7 @@ const FeedbackModal = ({ isOpen, onClose, projectName }) => {
   const [status, setStatus] = useState('idle');
 
   const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+  const FORMSPREE_URL = import.meta.env.VITE_FORMSPREE_FEEDBACK_URL;
 
   const reset = () => { setForm(INITIAL); setStatus('idle'); };
   const handleClose = () => { onClose(); setTimeout(reset, 300); };
@@ -18,10 +19,22 @@ const FeedbackModal = ({ isOpen, onClose, projectName }) => {
     e.preventDefault();
     setStatus('loading');
     try {
-      await axios.post(`${API_URL}/feedback`, {
+      const payload = {
         ...form,
         message: `[${projectName}] ${form.message}`,
-      });
+      };
+      
+      // 1. Save to Database
+      await axios.post(`${API_URL}/feedback`, payload);
+
+      // 2. Fire Formspree Email
+      if (FORMSPREE_URL) {
+        await axios.post(FORMSPREE_URL, {
+          _subject: `New Feedback: ${projectName}`,
+          ...payload
+        });
+      }
+
       setStatus('success');
       setTimeout(handleClose, 2000);
     } catch {

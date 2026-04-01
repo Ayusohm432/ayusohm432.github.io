@@ -47,10 +47,6 @@ const Navbar = () => {
           <a href="/#resume" className="px-5 py-2 rounded-full border border-primary/50 text-primary hover:bg-primary/10 transition-colors font-medium text-sm ml-4">
             Resume
           </a>
-          {/* Private issue board link — subtle */}
-          <Link to="/issues" className="flex items-center gap-1 px-3 py-1.5 rounded-full border border-red-500/30 text-red-400/70 hover:text-red-400 hover:border-red-500/60 hover:bg-red-500/10 transition-colors text-xs font-mono ml-1" title="Issue Board (Private)">
-            <ShieldAlert className="w-3.5 h-3.5" /> Issues
-          </Link>
         </div>
 
         {/* Mobile Menu Button */}
@@ -98,16 +94,6 @@ const Navbar = () => {
               >
                 View Resume
               </motion.a>
-              
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.6 }}
-              >
-                <Link to="/issues" onClick={() => setIsOpen(false)} className="flex items-center gap-2 text-sm text-red-500 border border-red-500/20 bg-red-500/5 px-6 py-3 rounded-full hover:bg-red-500/10 hover:border-red-500/40 transition-colors font-mono tracking-widest">
-                  <ShieldAlert className="w-5 h-5" /> ISSUE BOARD
-                </Link>
-              </motion.div>
             </div>
           </motion.div>
         )}

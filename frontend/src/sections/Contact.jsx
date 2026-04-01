@@ -8,13 +8,21 @@ const Contact = () => {
   const [status, setStatus] = useState('idle'); // idle, loading, success, error
 
   const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+  const FORMSPREE_URL = import.meta.env.VITE_FORMSPREE_CONTACT_URL;
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setStatus('loading');
     
     try {
+      // 1. Send to Local Database
       await axios.post(`${API_URL}/contact`, formData);
+      
+      // 2. Fire to Formspree (Email Notification) if configured
+      if (FORMSPREE_URL) {
+        await axios.post(FORMSPREE_URL, formData);
+      }
+
       setStatus('success');
       setFormData({ name: '', email: '', message: '' });
       setTimeout(() => setStatus('idle'), 3000);
