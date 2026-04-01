@@ -177,7 +177,7 @@ const AdminDashboard = () => {
     setLoading(true);
     try {
       const token = localStorage.getItem('adminToken');
-      const endpoints = ['header', 'about', 'resume', 'skills', 'experiences', 'educations', 'achievements', 'feedbacks', 'contacts', 'projects'];
+      const endpoints = ['header', 'about', 'resume', 'skills', 'experiences', 'educations', 'achievements', 'feedbacks', 'contacts', 'projects', 'social-links'];
       const responses = await Promise.all(endpoints.map(ep => 
         axios.get(`${API_URL}/${ep}`, { 
            headers: { 'X-Admin-Token': token } 
@@ -205,6 +205,7 @@ const AdminDashboard = () => {
     { id: 'features', label: 'Feature Board', icon: <ShieldAlert className="w-4 h-4" /> },
     { id: 'bugs', label: 'Global Bug Board', icon: <ShieldAlert className="w-4 h-4" /> },
     { id: 'inbox', label: 'Legacy Inbox', icon: <Inbox className="w-4 h-4" /> },
+    { id: 'social', label: 'Social Dock', icon: <ExternalLink className="w-4 h-4" /> },
   ];
 
   return (
@@ -343,6 +344,15 @@ const AdminDashboard = () => {
                    {data.contacts?.map(c => <div key={c.id} className="p-3 bg-white/5 rounded-xl border border-white/5">{c.name}: {c.message}</div>)}
                 </div>
               </div>
+            )}
+
+            {tab === 'social' && (
+              <ArrayList title="Social Dock Links" endpoint="social-links" data={data['social-links']} onSave={fetchAll} fields={[
+                { name: 'name', label: 'Platform Name (e.g. GitHub)' },
+                { name: 'icon_name', label: 'Icon Name (e.g. Github, Linkedin, Mail, LeetCode, GeeksforGeeks)' },
+                { name: 'url', label: 'Full URL' },
+                { name: 'color_class', label: 'Tailwind Hover Class (e.g. hover:text-white)' }
+              ]} />
             )}
 
             {tab === 'projects' && <ProjectUpload />}

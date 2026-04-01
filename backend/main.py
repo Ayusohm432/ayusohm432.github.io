@@ -321,3 +321,33 @@ def delete_achievement(id: int, db: Session = Depends(get_db), token: str = Depe
     db.query(models.Achievement).filter(models.Achievement.id == id).delete()
     db.commit()
     return {"status": "deleted"}
+
+# --- SOCIAL LINKS ---
+@app.get("/social-links", response_model=List[schemas.SocialLink])
+def get_social_links(db: Session = Depends(get_db)):
+    return db.query(models.SocialLink).all()
+
+@app.post("/social-links", response_model=schemas.SocialLink)
+def add_social_link(social: schemas.SocialLinkBase, db: Session = Depends(get_db), token: str = Depends(verify_admin)):
+    db_social = models.SocialLink(**social.model_dump())
+    db.add(db_social)
+    db.commit()
+    db.refresh(db_social)
+    return db_social
+
+@app.put("/social-links/{id}", response_model=schemas.SocialLink)
+def update_social_link(id: int, social: schemas.SocialLinkBase, db: Session = Depends(get_db), token: str = Depends(verify_admin)):
+    db_social = db.query(models.SocialLink).filter(models.SocialLink.id == id).first()
+    if not db_social:
+        raise HTTPException(status_code=404, detail="Social Link not found")
+    for k, v in social.model_dump().items():
+        setattr(db_social, k, v)
+    db.commit()
+    db.refresh(db_social)
+    return db_social
+
+@app.delete("/social-links/{id}")
+def delete_social_link(id: int, db: Session = Depends(get_db), token: str = Depends(verify_admin)):
+    db.query(models.SocialLink).filter(models.SocialLink.id == id).delete()
+    db.commit()
+    return {"status": "deleted"}

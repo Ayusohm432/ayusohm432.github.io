@@ -12,6 +12,7 @@ import GithubStats from './sections/GithubStats';
 import Contact from './sections/Contact';
 import BlobBackground from './components/BlobBackground';
 import CustomCursor from './components/CustomCursor';
+import SocialBar from './components/SocialBar';
 import IssueListing from './pages/IssueListing';
 import AdminDashboard from './pages/AdminDashboard';
 import ProjectsPage from './pages/ProjectsPage';
@@ -43,6 +44,7 @@ function Portfolio() {
       />
 
       <Navbar />
+      <SocialBar />
       <BlobBackground />
 
       <main className="container mx-auto px-6 pt-24 pb-12 sm:px-12 flex flex-col gap-24 relative z-10">

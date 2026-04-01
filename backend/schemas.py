@@ -169,3 +169,17 @@ class Resume(ResumeBase):
     id: int
     class Config:
         from_attributes = True
+
+class SocialLinkBase(BaseModel):
+    name: str
+    icon_name: str
+    url: str
+    color_class: str
+
+class SocialLinkCreate(SocialLinkBase):
+    pass
+
+class SocialLink(SocialLinkBase):
+    id: int
+    class Config:
+        from_attributes = True

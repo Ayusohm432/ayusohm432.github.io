@@ -116,3 +116,11 @@ class Resume(Base):
     __tablename__ = "resume"
     id = Column(Integer, primary_key=True, index=True)
     drive_link = Column(String)
+
+class SocialLink(Base):
+    __tablename__ = "social_links"
+    id = Column(Integer, primary_key=True, index=True)
+    name = Column(String)
+    icon_name = Column(String)
+    url = Column(String)
+    color_class = Column(String)

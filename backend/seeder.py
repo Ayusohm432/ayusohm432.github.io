@@ -103,4 +103,18 @@ def seed_cms_data(db: Session):
         for ic, txt in achs:
             db.add(models.Achievement(icon=ic, text=txt))
 
+    # Social Links
+    if db.query(models.SocialLink).count() == 0:
+        socials = [
+            ("LinkedIn", "Linkedin", "https://linkedin.com/in/ayusohm432", "hover:text-[#0077B5] hover:bg-[#0077B5]/10"),
+            ("GitHub", "Github", "https://github.com/ayusohm432", "hover:text-white hover:bg-white/10"),
+            ("X (Twitter)", "Twitter", "https://twitter.com/ayusohm432", "hover:text-[#1DA1F2] hover:bg-[#1DA1F2]/10"),
+            ("LeetCode", "LeetCode", "https://leetcode.com/u/Ayusohm432/", "hover:text-[#FFA116] hover:bg-[#FFA116]/10"),
+            ("GeeksforGeeks", "GeeksforGeeks", "https://www.geeksforgeeks.org/profile/ayushkumqdpc", "hover:text-[#2F8D46] hover:bg-[#2F8D46]/10"),
+            ("Email", "Mail", "mailto:ayushkumar76174@gmail.com", "hover:text-[#EA4335] hover:bg-[#EA4335]/10"),
+            ("Phone", "Phone", "tel:+91XXXXXXXXXX", "hover:text-[#34A853] hover:bg-[#34A853]/10"),
+        ]
+        for name, icon, url, color in socials:
+            db.add(models.SocialLink(name=name, icon_name=icon, url=url, color_class=color))
+
     db.commit()
