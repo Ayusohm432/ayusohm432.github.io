@@ -40,6 +40,10 @@ jobs:
         run: npm run build
         env:
           VITE_API_URL: ${{ secrets.VITE_API_URL }}
+          VITE_FORMSPREE_FEATURE_URL: ${{ secrets.VITE_FORMSPREE_FEATURE_URL }}
+          VITE_FORMSPREE_BUG_URL: ${{ secrets.VITE_FORMSPREE_BUG_URL }}
+          VITE_FORMSPREE_FEEDBACK_URL: ${{ secrets.VITE_FORMSPREE_FEEDBACK_URL }}
+          VITE_FORMSPREE_CONTACT_URL: ${{ secrets.VITE_FORMSPREE_CONTACT_URL }}
 
       - name: Setup Pages
         uses: actions/configure-pages@v4
