@@ -67,7 +67,7 @@ const Hero = () => {
             View Projects
             <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
           </a>
-          <a href="/resume.pdf" download className="w-full sm:w-auto px-8 py-4 glass border border-white/10 text-white rounded-lg font-medium hover:bg-white/5 transition flex items-center justify-center gap-2 group hover:border-primary/50">
+          <a href="../public/AYUSH KUMAR.pdf" download className="w-full sm:w-auto px-8 py-4 glass border border-white/10 text-white rounded-lg font-medium hover:bg-white/5 transition flex items-center justify-center gap-2 group hover:border-primary/50">
             <Download className="w-5 h-5 group-hover:-translate-y-1 transition-transform text-primary" />
             Download Resume
           </a>
