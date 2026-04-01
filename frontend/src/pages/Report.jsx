@@ -98,8 +98,14 @@ const Report = () => {
 
       <div className="w-full max-w-2xl">
         <div className="flex justify-between items-center mb-10">
-           <div className="px-4 py-1.5 bg-white/5 border border-white/10 rounded-full text-xs font-mono text-gray-400">
-             TARGET // {targetLabel}
+           <div className="px-5 py-2 bg-white/5 border border-white/10 rounded-full flex items-center gap-3 shadow-lg shadow-black/20 backdrop-blur-md">
+             <div className="relative flex items-center justify-center">
+                <div className="w-2 h-2 bg-red-500 rounded-full animate-pulse blur-[2px] absolute"></div>
+                <div className="w-2 h-2 bg-red-400 rounded-full relative z-10"></div>
+             </div>
+             <span className="text-xs font-bold tracking-wider text-gray-400 uppercase">
+                Target <span className="text-white/30 mx-1.5">•</span> <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-secondary drop-shadow-sm">{targetLabel}</span>
+             </span>
            </div>
            <Link to="/" className="flex items-center gap-1.5 text-sm text-primary hover:text-white px-4 py-2 rounded-xl transition-colors">
              <Home className="w-4 h-4" /> Home
