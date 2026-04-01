@@ -82,9 +82,9 @@ const Achievements = () => {
             viewport={{ once: false, amount: 0.15 }}
             transition={{ duration: 0.55, delay: 0.1 * (index % 3) }}
             key={index}
-            className={`flex flex-col md:flex-row items-center justify-between w-full ${index % 2 === 0 ? 'md:flex-row-reverse' : ''}`}
+            className={`relative flex flex-col md:flex-row items-center justify-between w-full ${index % 2 === 0 ? 'md:flex-row-reverse' : ''}`}
           >
-            <div className={`w-full md:w-5/12 ml-16 md:ml-0 ${index % 2 === 0 ? 'md:text-left' : 'md:text-right'}`}>
+            <div className={`w-full md:w-5/12 pl-16 pr-4 md:px-0 mt-20 md:mt-0 ${index % 2 === 0 ? 'md:text-left' : 'md:text-right'}`}>
               <div className="glass p-6 rounded-2xl hover:border-primary/30 transition-colors">
                 <span className="text-sm font-mono text-secondary tracking-widest block mb-2">{exp.date}</span>
                 <h3 className="text-xl font-bold text-white mb-1">{exp.role}</h3>
@@ -93,7 +93,7 @@ const Achievements = () => {
               </div>
             </div>
 
-            <div className="absolute left-8 md:left-1/2 -translate-x-1/2 w-16 h-16 rounded-full glass border border-white/20 flex items-center justify-center z-10 shadow-[0_0_20px_rgba(255,255,255,0.05)]">
+            <div className="absolute top-0 md:top-1/2 left-8 md:left-1/2 -translate-x-1/2 md:-translate-y-1/2 w-16 h-16 rounded-full glass border border-white/20 flex items-center justify-center z-10 shadow-[0_0_20px_rgba(255,255,255,0.05)] bg-[#0a0a0a]">
               {exp.icon}
             </div>
 
