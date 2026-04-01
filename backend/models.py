@@ -36,6 +36,17 @@ class BugReport(Base):
     severity = Column(String)
     created_at = Column(DateTime, default=datetime.datetime.utcnow)
 
+class FeatureRequest(Base):
+    __tablename__ = "feature_requests"
+
+    id = Column(Integer, primary_key=True, index=True)
+    project_name = Column(String, index=True)
+    name = Column(String)
+    email = Column(String)
+    title = Column(String)
+    description = Column(Text)
+    created_at = Column(DateTime, default=datetime.datetime.utcnow)
+
 class Feedback(Base):
     __tablename__ = "feedback"
 

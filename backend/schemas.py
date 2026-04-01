@@ -51,6 +51,22 @@ class BugReport(BugReportBase):
     class Config:
         from_attributes = True
 
+class FeatureRequestBase(BaseModel):
+    project_name: str
+    name: Optional[str] = None
+    email: Optional[str] = None
+    title: str
+    description: str
+
+class FeatureRequestCreate(FeatureRequestBase):
+    pass
+
+class FeatureRequest(FeatureRequestBase):
+    id: int
+    created_at: datetime
+    class Config:
+        from_attributes = True
+
 class FeedbackBase(BaseModel):
     name: Optional[str] = None
     message: str

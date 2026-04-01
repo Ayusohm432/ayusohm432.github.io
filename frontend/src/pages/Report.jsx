@@ -70,9 +70,10 @@ const Report = () => {
       // 3. Formspree Native Email
       const formspreeUrl = isBug ? FORMSPREE_BUG_URL : FORMSPREE_FEATURE_URL;
       if (formspreeUrl) {
+         const { screenshots, ...emailPayload } = payload;
          await axios.post(formspreeUrl, {
             _subject: `New ${isBug ? 'Bug' : 'Feature'} — ${targetLabel}`,
-            ...payload
+            ...emailPayload
          });
       }
 

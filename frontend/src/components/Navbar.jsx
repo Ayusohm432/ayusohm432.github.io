@@ -44,10 +44,6 @@ const Navbar = () => {
               <span className="absolute -bottom-1 left-0 w-0 h-[2px] bg-gradient-to-r from-primary to-secondary transition-all group-hover:w-full"></span>
             </a>
           ))}
-          <Link to="/report" className="text-red-400 hover:text-red-300 transition-all text-sm font-medium uppercase tracking-wider relative group flex items-center gap-1.5 ml-4">
-            <ShieldAlert className="w-4 h-4" /> Report
-            <span className="absolute -bottom-1 left-0 w-0 h-[2px] bg-red-500 transition-all group-hover:w-full"></span>
-          </Link>
           <a href="/#resume" className="px-5 py-2 rounded-full border border-primary/50 text-primary hover:bg-primary/10 transition-colors font-medium text-sm ml-4">
             Resume
           </a>

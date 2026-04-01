@@ -98,6 +98,18 @@ def create_bug_report(bug: schemas.BugReportCreate, db: Session = Depends(get_db
 def get_bug_reports(db: Session = Depends(get_db), token: str = Depends(verify_admin)):
     return db.query(models.BugReport).order_by(models.BugReport.created_at.desc()).all()
 
+@app.post("/feature-requests", response_model=schemas.FeatureRequest)
+def create_feature_request(req: schemas.FeatureRequestCreate, db: Session = Depends(get_db)):
+    db_req = models.FeatureRequest(**req.model_dump())
+    db.add(db_req)
+    db.commit()
+    db.refresh(db_req)
+    return db_req
+
+@app.get("/feature-requests", response_model=List[schemas.FeatureRequest])
+def get_feature_requests(db: Session = Depends(get_db), token: str = Depends(verify_admin)):
+    return db.query(models.FeatureRequest).order_by(models.FeatureRequest.created_at.desc()).all()
+
 @app.post("/common-issues", response_model=schemas.CommonIssue)
 def create_common_issue(issue: schemas.CommonIssueCreate, db: Session = Depends(get_db)):
     db_issue = models.CommonIssue(**issue.model_dump())
@@ -117,8 +129,8 @@ def generate_project_link(project_id: int, db: Session = Depends(get_db), token:
         raise HTTPException(status_code=404, detail="Project not found")
     
     slug = slugify(project.title)
-    # Target structure defined by user: ayusohm432.github.io/[slug]/report
-    project.report_link = f"ayusohm432.github.io/{slug}/report"
+    # Target structure defined by user: ayusohm432.github.io/report/[slug]
+    project.report_link = f"ayusohm432.github.io/report/{slug}"
     db.commit()
     db.refresh(project)
     return project
