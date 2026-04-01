@@ -54,10 +54,17 @@ thread.start()
 
 app = FastAPI(title="Portfolio API")
 
+# Security: Restrict CORS to specific production and local origins
+origins = [
+    "https://ayusohm432.github.io",
+    "http://localhost:5173", # Vite default
+    "http://127.0.0.1:5173",
+]
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"], # Since you'll deploy on Vercel, this handles CORS for now
-    allow_credentials=False, # Must be False when allow_origins is ["*"]
+    allow_origins=origins,
+    allow_credentials=True, # Allowed now that we have specific origins
     allow_methods=["*"],
     allow_headers=["*"],
 )
@@ -70,14 +77,28 @@ class LoginRequest(BaseModel):
     password: str
 
 def verify_admin(x_admin_token: str = Header(None)):
-    expected = os.environ.get("ADMIN_PASSWORD", "admin123")
+    expected = os.environ.get("ADMIN_PASSWORD")
+    
+    # Security: Ensure a password is set in production
+    if not expected:
+        if os.environ.get("RENDER"): # Check if we are on Render production
+            raise HTTPException(status_code=500, detail="ADMIN_PASSWORD environment variable is missing on server")
+        expected = "admin123" # Local dev fallback
+        
     if x_admin_token != expected:
         raise HTTPException(status_code=401, detail="Unauthorized admin access")
     return x_admin_token
 
 @app.post("/admin/login")
 def login_admin(req: LoginRequest):
-    expected = os.environ.get("ADMIN_PASSWORD", "admin123")
+    expected = os.environ.get("ADMIN_PASSWORD")
+    
+    # Production safety check
+    if not expected:
+        if os.environ.get("RENDER"):
+            raise HTTPException(status_code=500, detail="Security Error: Admin Password not configured")
+        expected = "admin123"
+        
     if req.password == expected:
         return {"token": req.password}
     raise HTTPException(status_code=401, detail="Invalid password")
@@ -152,7 +173,7 @@ def create_feedback(feedback: schemas.FeedbackCreate, db: Session = Depends(get_
     return db_feedback
 
 @app.get("/feedbacks", response_model=List[schemas.Feedback])
-def get_feedbacks(db: Session = Depends(get_db)):
+def get_feedbacks(db: Session = Depends(get_db), token: str = Depends(verify_admin)):
     return db.query(models.Feedback).order_by(models.Feedback.created_at.desc()).all()
 
 @app.post("/contact", response_model=schemas.ContactMessage)
@@ -164,7 +185,7 @@ def create_contact(contact: schemas.ContactMessageCreate, db: Session = Depends(
     return db_contact
 
 @app.get("/contacts", response_model=List[schemas.ContactMessage])
-def get_contacts(db: Session = Depends(get_db)):
+def get_contacts(db: Session = Depends(get_db), token: str = Depends(verify_admin)):
     return db.query(models.ContactMessage).order_by(models.ContactMessage.created_at.desc()).all()
 
 # --- CMS ENDPOINTS ---

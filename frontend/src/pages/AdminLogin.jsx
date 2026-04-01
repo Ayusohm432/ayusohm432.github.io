@@ -16,7 +16,7 @@ const AdminLogin = () => {
     try {
       const response = await axios.post(`${API_URL}/admin/login`, { password });
       localStorage.setItem('adminToken', response.data.token);
-      navigate('/issues');
+      navigate('/admin');
     } catch (err) {
       console.error(err);
       setStatus('error');

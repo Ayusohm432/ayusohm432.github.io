@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { UploadCloud, ExternalLink, Github, Layers, Loader2, CheckCircle2, LogOut, Copy, RefreshCw } from 'lucide-react';
-import { useNavigate, Link } from 'react-router-dom';
+import { UploadCloud, ExternalLink, Github, Layers, Loader2, CheckCircle2, Copy, RefreshCw } from 'lucide-react';
 import axios from 'axios';
 
-const inputCls = "w-full bg-surface/60 border border-white/10 rounded-xl px-4 py-3.5 text-white placeholder-gray-500 focus:outline-none focus:border-primary/50 transition-colors text-sm font-mono";
+const inputCls = "w-full bg-[#0d0d14]/80 border border-white/5 rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-primary/40 focus:ring-1 focus:ring-primary/20 transition-all text-sm font-mono shadow-inner";
 
 const INITIAL = {
   title: '',
@@ -21,8 +20,6 @@ const ProjectUpload = () => {
   const [fetching, setFetching] = useState(true);
 
   const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
-
-  const navigate = useNavigate();
 
   const fetchProjects = async () => {
     try {
@@ -81,18 +78,8 @@ const ProjectUpload = () => {
   };
 
   return (
-    <div className="min-h-screen pt-28 px-5 pb-20 relative">
-      <div className="max-w-3xl mx-auto">
-        
-        {/* Navigation Bar */}
-        <div className="flex justify-between items-center mb-10 border-b border-white/10 pb-6">
-           <button onClick={() => { localStorage.removeItem('adminToken'); navigate('/login'); }} className="flex items-center gap-1.5 text-sm text-red-500 border border-red-500/40 px-4 py-2 rounded-xl hover:bg-red-500/10 transition-colors">
-             <LogOut className="w-4 h-4" /> Secure Logout
-           </button>
-           <Link to="/" className="flex items-center gap-1.5 text-sm text-primary border border-primary/40 px-4 py-2 rounded-xl hover:bg-primary/10 transition-colors">
-             <ExternalLink className="w-4 h-4" /> Portfolio
-           </Link>
-        </div>
+    <div className="w-full">
+      <div className="max-w-4xl mx-auto">
 
         <div className="mb-10 text-center">
           <motion.div 
@@ -116,7 +103,7 @@ const ProjectUpload = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
-          className="glass border border-white/10 rounded-3xl p-6 md:p-8"
+          className="glass border border-white/[0.05] rounded-3xl p-8 shadow-xl"
         >
           <form onSubmit={handleSubmit} className="space-y-6">
             
@@ -158,53 +145,52 @@ const ProjectUpload = () => {
             <button 
               type="submit" 
               disabled={status === 'loading' || status === 'success'}
-              className="w-full mt-4 py-4 rounded-xl font-bold bg-primary/20 text-primary border border-primary/30 hover:bg-primary/30 hover:border-primary/50 transition-all flex justify-center items-center gap-2 disabled:opacity-50"
+              className="w-full mt-4 py-4 rounded-xl font-bold bg-primary/20 text-primary border border-primary/30 hover:bg-primary/30 hover:border-primary/50 transition-all flex justify-center items-center gap-2 disabled:opacity-50 hover:scale-[1.01] active:scale-[0.99] shadow-lg shadow-primary/5"
             >
               {status === 'idle' && 'Push to Database'}
-              {status === 'loading' && <><Loader2 className="w-5 h-5 animate-spin"/> Authenticating Session...</>}
-              {status === 'success' && <><CheckCircle2 className="w-5 h-5"/> Uploaded Fast & Securely!</>}
-              {status === 'error' && 'Failed — Are you authenticated?'}
+              {status === 'loading' && <><Loader2 className="w-5 h-5 animate-spin"/> Authenticating...</>}
+              {status === 'success' && <><CheckCircle2 className="w-5 h-5"/> Portfolio Updated!</>}
+              {status === 'error' && 'Failed — Check Credentials'}
             </button>
           </form>
-        </motion.div>
-
-        {/* ── Active Projects Tracking ── */}
-        <div className="mt-16">
-           <h2 className="text-2xl font-bold text-white mb-6">Database Clusters</h2>
+        </motion.div>        {/* ── Active Projects Tracking ── */}
+        <div className="mt-20">
+           <h2 className="text-2xl font-bold text-white mb-8 tracking-tight">Active Architectures</h2>
            
            {fetching ? (
-             <div className="text-gray-500 py-10 flex flex-col items-center">
-               <Loader2 className="w-6 h-6 animate-spin mb-3" /> Syncing Active Architectures...
+             <div className="text-gray-500 py-20 flex flex-col items-center">
+               <Loader2 className="w-8 h-8 animate-spin mb-4 text-primary" /> 
+               <p className="text-xs uppercase tracking-widest font-mono">Syncing Database...</p>
              </div>
            ) : projects.length === 0 ? (
-             <div className="glass border border-white/10 rounded-2xl p-8 text-center text-gray-400">
-               No portfolios initialized inside the Supabase network.
+             <div className="glass border border-white/5 rounded-3xl p-12 text-center text-gray-500 italic">
+               No architectural projects initialized in Supabase.
              </div>
            ) : (
-             <div className="grid gap-4">
+             <div className="grid gap-6">
                 {projects.map(proj => (
-                  <div key={proj.id} className="glass border border-white/10 rounded-2xl p-5 flex flex-col md:flex-row md:items-center justify-between gap-5">
+                  <div key={proj.id} className="glass border border-white/[0.05] rounded-3xl p-6 flex flex-col md:flex-row md:items-center justify-between gap-6 hover:border-white/10 transition-colors shadow-lg">
                      <div>
-                        <h3 className="font-bold text-lg text-white mb-1 tracking-tight">{proj.title}</h3>
-                        <p className="text-xs text-secondary font-mono bg-secondary/10 px-2 py-0.5 rounded border border-secondary/20 inline-block">{proj.tech_stack}</p>
+                        <h3 className="font-bold text-xl text-white mb-1.5 tracking-tight">{proj.title}</h3>
+                        <p className="text-[10px] text-secondary font-mono bg-secondary/10 px-2 py-0.5 rounded-full border border-secondary/20 inline-block uppercase tracking-wider">{proj.tech_stack}</p>
                      </div>
                      
-                     <div className="flex flex-col sm:flex-row sm:items-center gap-3 w-full md:w-auto">
+                     <div className="flex flex-col sm:flex-row sm:items-center gap-4 w-full md:w-auto">
                         {proj.report_link ? (
-                           <div className="flex items-center gap-2 bg-white/5 border border-white/10 rounded-xl px-4 py-2 flex-grow overflow-hidden">
-                              <span className="text-xs font-mono text-gray-400 truncate max-w-[200px]">{proj.report_link}</span>
-                              <button onClick={() => navigator.clipboard.writeText(`https://${proj.report_link}`)} className="ml-auto text-primary hover:text-white transition-colors" title="Copy to clipboard">
-                                 <Copy className="w-4 h-4" />
+                           <div className="flex items-center gap-2 bg-[#0d0d14]/50 border border-white/5 rounded-xl px-4 py-2.5 flex-grow overflow-hidden">
+                              <span className="text-[10px] font-mono text-gray-500 truncate max-w-[150px]">{proj.report_link}</span>
+                              <button onClick={() => navigator.clipboard.writeText(`https://${proj.report_link}`)} className="ml-auto text-primary hover:text-white transition-colors p-1" title="Copy to clipboard">
+                                 <Copy className="w-3.5 h-3.5" />
                               </button>
                            </div>
                         ) : (
-                           <div className="text-xs text-gray-500 italic px-4 py-2 border border-dashed border-white/10 rounded-xl text-center">
-                              No URL generated
+                           <div className="text-[10px] text-gray-600 font-mono italic px-4 py-2.5 border border-dashed border-white/10 rounded-xl text-center">
+                              NO_LINK_GENERATED
                            </div>
                         )}
                         <button 
                            onClick={() => handleGenerateLink(proj.id)}
-                           className="whitespace-nowrap flex items-center justify-center gap-1.5 px-4 py-2.5 bg-primary/20 hover:bg-primary/30 text-primary border border-primary/40 hover:border-primary border-opacity-50 rounded-xl text-xs font-bold uppercase tracking-wider transition-all"
+                           className="whitespace-nowrap flex items-center justify-center gap-2 px-6 py-2.5 bg-primary/20 hover:bg-primary/30 text-primary border border-primary/30 rounded-xl text-[10px] font-bold uppercase tracking-[0.1em] transition-all hover:scale-105 active:scale-95"
                         >
                            <RefreshCw className="w-3.5 h-3.5" /> Generate Link
                         </button>
@@ -214,7 +200,6 @@ const ProjectUpload = () => {
              </div>
            )}
         </div>
-
       </div>
     </div>
   );
