@@ -14,6 +14,12 @@ import BlobBackground from './components/BlobBackground';
 import CustomCursor from './components/CustomCursor';
 import IssueListing from './pages/IssueListing';
 import AdminDashboard from './pages/AdminDashboard';
+import ProjectsPage from './pages/ProjectsPage';
+import ProtectedRoute from './components/ProtectedRoute';
+import AdminLogin from './pages/AdminLogin';
+import ProjectUpload from './pages/ProjectUpload';
+import Report from './pages/Report';
+import CommonIssue from './pages/CommonIssue';
 
 function Portfolio() {
   const [scrollY, setScrollY] = useState(0);
@@ -43,7 +49,7 @@ function Portfolio() {
         <Hero />
         <About />
         <Skills />
-        <Projects />
+        <Projects limit={2} showViewMore={true} />
         <Achievements />
         <Resume />
         <GithubStats />
@@ -60,8 +66,10 @@ function App() {
     <Router>
       <Routes>
         <Route path="/*" element={<Portfolio />} />
-        <Route path="/issues" element={<IssueListing />} />
-        <Route path="/admin" element={<AdminDashboard />} />
+        <Route path="/login" element={<AdminLogin />} />
+        <Route path="/report/:projectSlug?" element={<Report />} />
+        <Route path="/admin" element={<ProtectedRoute><AdminDashboard /></ProtectedRoute>} />
+        <Route path="/projects" element={<ProjectsPage />} />
       </Routes>
     </Router>
   );

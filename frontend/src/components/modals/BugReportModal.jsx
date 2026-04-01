@@ -1,51 +1,91 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, BugPlay, Lightbulb, Loader2, CheckCircle2 } from 'lucide-react';
+import { X, BugPlay, Lightbulb, Loader2, CheckCircle2, Image as ImageIcon, Trash2 } from 'lucide-react';
 import axios from 'axios';
 
 const inputCls =
-  'w-full bg-surface/60 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-red-400/70 transition-colors text-sm';
-const selectCls =
-  'w-full bg-[#0d0d14] border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-red-400/70 transition-colors appearance-none text-sm';
+  'w-full bg-surface/60 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-red-400/70 transition-colors text-sm font-mono';
 
-const INITIAL = { name: '', email: '', issue_title: '', description: '', steps: '', severity: 'medium' };
+const INITIAL = { name: '', email: '', page_feature: '', issue: '', steps: '', title: '', description: '' };
 
 const BugReportModal = ({ isOpen, onClose, projectName }) => {
   const [reportType, setReportType] = useState('bug');
   const [form, setForm] = useState(INITIAL);
-  const [status, setStatus] = useState('idle'); // idle | loading | success | error
+  const [screenshots, setScreenshots] = useState([]);
+  const [status, setStatus] = useState('idle');
 
   const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+  const FORMSPREE_BUG_URL = import.meta.env.VITE_FORMSPREE_BUG_URL;
+  const FORMSPREE_FEATURE_URL = import.meta.env.VITE_FORMSPREE_FEATURE_URL;
+
   const isBug = reportType === 'bug';
 
   const set = (e) => setForm((p) => ({ ...p, [e.target.name]: e.target.value }));
 
-  const reset = () => { setForm(INITIAL); setReportType('bug'); setStatus('idle'); };
+  const reset = () => { setForm(INITIAL); setScreenshots([]); setReportType('bug'); setStatus('idle'); };
 
   const handleClose = () => { onClose(); setTimeout(reset, 300); };
+
+  const handleImageUpload = (e) => {
+    const files = Array.from(e.target.files);
+    if (!files.length) return;
+    
+    files.forEach(file => {
+      const reader = new FileReader();
+      reader.onload = (evt) => {
+        setScreenshots(prev => [...prev, evt.target.result]);
+      };
+      reader.readAsDataURL(file);
+    });
+  };
+
+  const removeScreenshot = (index) => {
+    setScreenshots(prev => prev.filter((_, i) => i !== index));
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setStatus('loading');
 
-    // Persist locally for the Issue Board
-    const issue = {
-      project_name: projectName,
-      report_type: reportType,
-      ...form,
-      submitted_at: new Date().toISOString(),
-    };
-    const stored = JSON.parse(localStorage.getItem('portfolio_issues') || '[]');
-    localStorage.setItem('portfolio_issues', JSON.stringify([...stored, issue]));
+    let payload;
+    let targetEndpoint;
+    let formspreeUrl;
 
-    // Fire to backend (best-effort)
-    try {
-      await axios.post(`${API_URL}/bug-report`, {
+    if (isBug) {
+      payload = {
+        report_type: 'bug',
+        page_feature: `${projectName} — ${form.page_feature}`,
+        name: form.name,
+        email: form.email,
+        issue: form.issue,
+        steps: form.steps,
+        screenshots: screenshots.length > 0 ? JSON.stringify(screenshots) : null
+      };
+      targetEndpoint = `${API_URL}/common-issues`;
+      formspreeUrl = FORMSPREE_BUG_URL;
+    } else {
+      payload = {
         project_name: projectName,
-        issue_title: form.issue_title,
-        description: form.description,
-        severity: form.severity,
-      });
+        name: form.name,
+        email: form.email,
+        title: form.title,
+        description: form.description
+      };
+      targetEndpoint = `${API_URL}/feature-requests`;
+      formspreeUrl = FORMSPREE_FEATURE_URL;
+    }
+
+    try {
+      await axios.post(targetEndpoint, payload);
+
+      if (formspreeUrl) {
+         // Sanitizing out screenshots for formspree safety
+         const { screenshots: _scr, ...emailPayload } = payload;
+         await axios.post(formspreeUrl, {
+            _subject: `New ${isBug ? 'Bug' : 'Feature'}: ${projectName}`,
+            ...emailPayload
+         });
+      }
     } catch (_) { }
 
     setStatus('success');
@@ -88,74 +128,82 @@ const BugReportModal = ({ isOpen, onClose, projectName }) => {
             </div>
 
             {/* Scrollable body */}
-            <form id="bug-form" onSubmit={handleSubmit}>
-              <div className="flex-1 min-h-0 overflow-y-auto px-6 py-5 space-y-4">
+            <form id="bug-form" onSubmit={handleSubmit} className="flex-1 min-h-0 overflow-y-auto px-6 py-5 space-y-4">
 
-                {/* Type toggle */}
-                <div className="grid grid-cols-2 gap-1.5 p-1 bg-white/5 rounded-xl border border-white/10">
-                  {[['bug', '🐛 Bug Report'], ['feature', '💡 Feature Request']].map(([t, label]) => (
-                    <button key={t} type="button" onClick={() => setReportType(t)}
-                      className={`py-2 rounded-lg text-sm font-medium transition-all ${reportType === t
-                          ? t === 'bug'
-                            ? 'bg-red-500/25 text-red-400 border border-red-500/40'
-                            : 'bg-primary/25 text-primary border border-primary/40'
-                          : 'text-gray-400 hover:text-gray-200'
-                        }`}
-                    >{label}</button>
-                  ))}
-                </div>
+              {/* Type toggle */}
+              <div className="grid grid-cols-2 gap-1.5 p-1 bg-white/5 rounded-xl border border-white/10">
+                {[['bug', '🐛 Bug Report'], ['feature', '💡 Feature Request']].map(([t, label]) => (
+                  <button key={t} type="button" onClick={() => setReportType(t)}
+                    className={`py-2 rounded-lg text-sm font-medium transition-all ${reportType === t
+                        ? t === 'bug'
+                          ? 'bg-red-500/25 text-red-400 border border-red-500/40'
+                          : 'bg-primary/25 text-primary border border-primary/40'
+                        : 'text-gray-400 hover:text-gray-200'
+                      }`}
+                  >{label}</button>
+                ))}
+              </div>
 
-                {/* Name + Email */}
-                <div className="grid sm:grid-cols-2 gap-3">
-                  <div>
-                    <label className="block text-xs text-gray-400 mb-1.5">Name <span className="text-gray-600">(optional)</span></label>
-                    <input type="text" name="name" value={form.name} onChange={set} className={inputCls} placeholder="Your name" />
-                  </div>
-                  <div>
-                    <label className="block text-xs text-gray-400 mb-1.5">Email <span className="text-gray-600">(optional)</span></label>
-                    <input type="email" name="email" value={form.email} onChange={set} className={inputCls} placeholder="you@example.com" />
-                  </div>
-                </div>
-
-                {/* Title + Severity */}
-                <div className="grid sm:grid-cols-2 gap-3">
-                  <div>
-                    <label className="block text-xs text-gray-400 mb-1.5">Title <span className="text-red-400">*</span></label>
-                    <input type="text" name="issue_title" value={form.issue_title} onChange={set} required className={inputCls} placeholder="One-line summary…" />
-                  </div>
-                  <div>
-                    <label className="block text-xs text-gray-400 mb-1.5">Severity</label>
-                    <select name="severity" value={form.severity} onChange={set} className={selectCls}>
-                      <option value="low">🟢 Low — minor issue</option>
-                      <option value="medium">🟡 Medium — partly broken</option>
-                      <option value="high">🔴 High — completely broken</option>
-                    </select>
-                  </div>
-                </div>
-
-                {/* Description */}
+              {/* Shared: Name + Email */}
+              <div className="grid sm:grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-xs text-gray-400 mb-1.5">
-                    {isBug ? 'Description' : 'Feature Description'} <span className="text-red-400">*</span>
-                  </label>
-                  <textarea name="description" required rows={4} value={form.description} onChange={set}
-                    className={`${inputCls} resize-none`}
-                    placeholder={isBug ? 'What happened? What did you expect?' : 'Describe the feature you would like to see…'}
-                  />
+                  <label className="block text-xs text-gray-400 mb-1.5">Name <span className="text-gray-600">(optional)</span></label>
+                  <input type="text" name="name" value={form.name} onChange={set} className={inputCls} placeholder="Your name" />
                 </div>
+                <div>
+                  <label className="block text-xs text-gray-400 mb-1.5">Email <span className="text-gray-600">(optional)</span></label>
+                  <input type="email" name="email" value={form.email} onChange={set} className={inputCls} placeholder="you@example.com" />
+                </div>
+              </div>
 
-                {/* Steps — bug only */}
-                {isBug && (
+              {/* Bug Specific Form */}
+              {isBug ? (
+                <>
+                  <div>
+                    <label className="block text-xs text-gray-400 mb-1.5">Page or Feature Region <span className="text-red-400">*</span></label>
+                    <input type="text" required name="page_feature" value={form.page_feature} onChange={set} className={inputCls} placeholder="e.g. Navigation Header, Login Button" />
+                  </div>
+                  <div>
+                    <label className="block text-xs text-gray-400 mb-1.5">Defect Description <span className="text-red-400">*</span></label>
+                    <textarea required name="issue" rows={3} value={form.issue} onChange={set} className={`${inputCls} resize-none`} placeholder="What actually happened vs what you expected?" />
+                  </div>
                   <div>
                     <label className="block text-xs text-gray-400 mb-1.5">Steps to Reproduce <span className="text-gray-600">(optional)</span></label>
-                    <textarea name="steps" rows={3} value={form.steps} onChange={set}
-                      className={`${inputCls} resize-none`}
-                      placeholder={'1. Go to…\n2. Click on…\n3. See error…'}
-                    />
+                    <textarea name="steps" rows={2} value={form.steps} onChange={set} className={`${inputCls} resize-none`} placeholder="1. Go to… 2. Click on…" />
                   </div>
-                )}
-
-              </div>
+                  <div className="space-y-2">
+                    <label className="text-xs text-gray-400 flex items-center gap-2">
+                      <ImageIcon className="w-3.5 h-3.5" /> Attachments <span className="text-gray-600">(optional)</span>
+                    </label>
+                    <div className="flex gap-2 flex-wrap">
+                      {screenshots.map((src, i) => (
+                        <div key={i} className="relative w-16 h-16 rounded-lg border border-white/20 overflow-hidden group">
+                          <img src={src} className="w-full h-full object-cover" alt="upload snippet" />
+                          <button type="button" onClick={() => removeScreenshot(i)} className="absolute top-0.5 right-0.5 bg-red-500/80 p-0.5 rounded opacity-0 group-hover:opacity-100 transition-opacity">
+                            <Trash2 className="w-3 h-3 text-white" />
+                          </button>
+                        </div>
+                      ))}
+                      <label className="w-16 h-16 rounded-lg border border-dashed border-white/20 bg-white/5 hover:bg-white/10 flex items-center justify-center cursor-pointer transition-colors">
+                        <span className="text-xl text-gray-500">+</span>
+                        <input type="file" onChange={handleImageUpload} accept="image/*" className="hidden" multiple />
+                      </label>
+                    </div>
+                  </div>
+                </>
+              ) : (
+                <>
+                  {/* Feature Specific Form */}
+                  <div>
+                    <label className="block text-xs text-gray-400 mb-1.5">Title <span className="text-primary">*</span></label>
+                    <input type="text" name="title" required value={form.title} onChange={set} className={inputCls} placeholder="One-line summary…" />
+                  </div>
+                  <div>
+                    <label className="block text-xs text-gray-400 mb-1.5">Feature Description <span className="text-primary">*</span></label>
+                    <textarea name="description" required rows={4} value={form.description} onChange={set} className={`${inputCls} resize-none`} placeholder="Describe the feature you would like to see…" />
+                  </div>
+                </>
+              )}
             </form>
 
             {/* Sticky footer */}
