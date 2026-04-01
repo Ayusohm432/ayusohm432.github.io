@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { HashRouter as Router, Routes, Route } from 'react-router-dom';
+import { HashRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import Hero from './sections/Hero';
@@ -61,9 +61,31 @@ function Portfolio() {
   );
 }
 
+
+
+function ScrollToHash() {
+  const { pathname } = useLocation();
+
+  useEffect(() => {
+    // pathname in HashRouter for "#about" will be "/about"
+    const id = pathname.replace('/', '');
+    if (id) {
+      const element = document.getElementById(id);
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth' });
+      }
+    } else {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  }, [pathname]);
+
+  return null;
+}
+
 function App() {
   return (
     <Router>
+      <ScrollToHash />
       <Routes>
         <Route path="/*" element={<Portfolio />} />
         <Route path="/login" element={<AdminLogin />} />

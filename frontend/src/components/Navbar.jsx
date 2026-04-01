@@ -8,11 +8,11 @@ const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
 
   const navItems = [
-    { name: 'About', href: '#/#about' },
-    { name: 'Skills', href: '#/#skills' },
-    { name: 'Projects', href: '#/#projects' },
-    { name: 'Achievements', href: '#/#achievements' },
-    { name: 'Contact', href: '#/#contact' },
+    { name: 'About', href: '#about' },
+    { name: 'Skills', href: '#skills' },
+    { name: 'Projects', href: '#projects' },
+    { name: 'Achievements', href: '#achievements' },
+    { name: 'Contact', href: '#contact' },
   ];
 
   useEffect(() => {
@@ -44,7 +44,7 @@ const Navbar = () => {
               <span className="absolute -bottom-1 left-0 w-0 h-[2px] bg-gradient-to-r from-primary to-secondary transition-all group-hover:w-full"></span>
             </a>
           ))}
-          <a href="#/#resume" className="px-5 py-2 rounded-full border border-primary/50 text-primary hover:bg-primary/10 transition-colors font-medium text-sm ml-4">
+          <a href="#resume" className="px-5 py-2 rounded-full border border-primary/50 text-primary hover:bg-primary/10 transition-colors font-medium text-sm ml-4">
             Resume
           </a>
         </div>
@@ -94,7 +94,7 @@ const Navbar = () => {
                 initial={{ opacity: 0, scale: 0.9 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ delay: 0.5, type: 'spring' }}
-                href="#/#resume" 
+                href="#resume" 
                 onClick={() => setIsOpen(false)} 
                 className="px-10 py-4 w-[250px] text-center rounded-full bg-gradient-to-r from-primary/10 to-secondary/10 text-white border border-primary/40 font-bold hover:shadow-[0_0_30px_rgba(59,130,246,0.3)] transition-all"
               >
