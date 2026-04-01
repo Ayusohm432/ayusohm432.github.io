@@ -158,8 +158,8 @@ def generate_project_link(project_id: int, db: Session = Depends(get_db), token:
         raise HTTPException(status_code=404, detail="Project not found")
     
     slug = slugify(project.title)
-    # Target structure defined by user: ayusohm432.github.io/report/[slug]
-    project.report_link = f"ayusohm432.github.io/report/{slug}"
+    # Target structure defined by user: ayusohm432.github.io/#/report/[slug]
+    project.report_link = f"ayusohm432.github.io/#/report/{slug}"
     db.commit()
     db.refresh(project)
     return project
