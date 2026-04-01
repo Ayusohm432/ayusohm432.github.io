@@ -177,9 +177,23 @@ const ProjectUpload = () => {
                      
                      <div className="flex flex-col sm:flex-row sm:items-center gap-4 w-full md:w-auto">
                         {proj.report_link ? (
-                           <div className="flex items-center gap-2 bg-[#0d0d14]/50 border border-white/5 rounded-xl px-4 py-2.5 flex-grow overflow-hidden">
-                              <span className="text-[10px] font-mono text-gray-500 truncate max-w-[150px]">{proj.report_link}</span>
-                              <button onClick={() => navigator.clipboard.writeText(`https://${proj.report_link}`)} className="ml-auto text-primary hover:text-white transition-colors p-1" title="Copy to clipboard">
+                           <div className="flex items-center gap-2 bg-[#0d0d14]/50 border border-white/5 rounded-xl px-4 py-2.5 flex-grow overflow-hidden group/link">
+                              <a 
+                                 href={`https://${proj.report_link}`} 
+                                 target="_blank" 
+                                 rel="noopener noreferrer" 
+                                 className="text-[10px] font-mono text-gray-500 hover:text-primary transition-colors truncate max-w-[200px]"
+                              >
+                                 {proj.report_link}
+                              </a>
+                              <button 
+                                 onClick={() => {
+                                    const fullUrl = `https://${proj.report_link}`;
+                                    navigator.clipboard.writeText(fullUrl);
+                                 }} 
+                                 className="ml-auto text-primary hover:text-white transition-colors p-1" 
+                                 title="Copy to clipboard"
+                              >
                                  <Copy className="w-3.5 h-3.5" />
                               </button>
                            </div>
