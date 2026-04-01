@@ -1,6 +1,7 @@
-from fastapi import FastAPI, Depends, HTTPException
+from fastapi import FastAPI, Depends, HTTPException, Header
 from sqlalchemy.orm import Session
 from fastapi.middleware.cors import CORSMiddleware
+from pydantic import BaseModel
 import models, schemas
 from database import engine, get_db
 from typing import List
@@ -51,9 +52,33 @@ app.add_middleware(
 def read_root():
     return {"message": "Welcome to Portfolio API"}
 
+class LoginRequest(BaseModel):
+    password: str
+
+def verify_admin(x_admin_token: str = Header(None)):
+    expected = os.environ.get("ADMIN_PASSWORD", "admin123")
+    if x_admin_token != expected:
+        raise HTTPException(status_code=401, detail="Unauthorized admin access")
+    return x_admin_token
+
+@app.post("/admin/login")
+def login_admin(req: LoginRequest):
+    expected = os.environ.get("ADMIN_PASSWORD", "admin123")
+    if req.password == expected:
+        return {"token": req.password}
+    raise HTTPException(status_code=401, detail="Invalid password")
+
 @app.get("/projects", response_model=List[schemas.Project])
 def get_projects(db: Session = Depends(get_db)):
     return db.query(models.Project).all()
+
+@app.post("/projects", response_model=schemas.Project)
+def create_project(project: schemas.ProjectCreate, db: Session = Depends(get_db), token: str = Depends(verify_admin)):
+    db_project = models.Project(**project.model_dump())
+    db.add(db_project)
+    db.commit()
+    db.refresh(db_project)
+    return db_project
 
 @app.post("/bug-report", response_model=schemas.BugReport)
 def create_bug_report(bug: schemas.BugReportCreate, db: Session = Depends(get_db)):
@@ -64,7 +89,7 @@ def create_bug_report(bug: schemas.BugReportCreate, db: Session = Depends(get_db
     return db_bug
 
 @app.get("/bug-reports", response_model=List[schemas.BugReport])
-def get_bug_reports(db: Session = Depends(get_db)):
+def get_bug_reports(db: Session = Depends(get_db), token: str = Depends(verify_admin)):
     return db.query(models.BugReport).order_by(models.BugReport.created_at.desc()).all()
 
 @app.post("/feedback", response_model=schemas.Feedback)

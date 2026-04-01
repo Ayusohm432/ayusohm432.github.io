@@ -15,6 +15,9 @@ import CustomCursor from './components/CustomCursor';
 import IssueListing from './pages/IssueListing';
 import AdminDashboard from './pages/AdminDashboard';
 import ProjectsPage from './pages/ProjectsPage';
+import ProtectedRoute from './components/ProtectedRoute';
+import AdminLogin from './pages/AdminLogin';
+import ProjectUpload from './pages/ProjectUpload';
 
 function Portfolio() {
   const [scrollY, setScrollY] = useState(0);
@@ -61,7 +64,9 @@ function App() {
     <Router>
       <Routes>
         <Route path="/*" element={<Portfolio />} />
-        <Route path="/issues" element={<IssueListing />} />
+        <Route path="/login" element={<AdminLogin />} />
+        <Route path="/issues" element={<ProtectedRoute><IssueListing /></ProtectedRoute>} />
+        <Route path="/upload" element={<ProtectedRoute><ProjectUpload /></ProtectedRoute>} />
         <Route path="/admin" element={<AdminDashboard />} />
         <Route path="/projects" element={<ProjectsPage />} />
       </Routes>

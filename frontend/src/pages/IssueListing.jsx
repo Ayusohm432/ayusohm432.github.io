@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { BugPlay, Lightbulb, ChevronDown, Image, Trash2, ExternalLink, Monitor, Smartphone, Tablet, ShieldAlert } from 'lucide-react';
+import { BugPlay, Lightbulb, ChevronDown, Image, Trash2, ExternalLink, Monitor, Smartphone, Tablet, ShieldAlert, LogOut } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 // ── helpers ──────────────────────────────────────────────────────────────────
@@ -214,12 +214,20 @@ const IssueListing = () => {
               🐛 {bugs} bug{bugs !== 1 ? 's' : ''} · 💡 {features} feature request{features !== 1 ? 's' : ''}
             </p>
           </div>
-          <Link
-            to="/"
-            className="flex items-center gap-1.5 text-sm text-primary border border-primary/40 px-4 py-2 rounded-xl hover:bg-primary/10 transition-colors"
-          >
-            <ExternalLink className="w-4 h-4" /> Back to Portfolio
-          </Link>
+          <div className="flex items-center gap-3">
+            <button
+              onClick={() => { localStorage.removeItem('adminToken'); window.location.href = '/login'; }}
+              className="flex items-center gap-1.5 text-sm text-red-500 border border-red-500/40 px-4 py-2 rounded-xl hover:bg-red-500/10 transition-colors"
+            >
+              <LogOut className="w-4 h-4" /> Logout
+            </button>
+            <Link
+              to="/"
+              className="flex items-center gap-1.5 text-sm text-primary border border-primary/40 px-4 py-2 rounded-xl hover:bg-primary/10 transition-colors"
+            >
+              <ExternalLink className="w-4 h-4" /> Portfolio
+            </Link>
+          </div>
         </div>
 
         {/* ── Filters ── */}
