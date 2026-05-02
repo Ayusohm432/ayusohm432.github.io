@@ -115,7 +115,7 @@ class Achievement(Base):
 class Resume(Base):
     __tablename__ = "resume"
     id = Column(Integer, primary_key=True, index=True)
-    drive_link = Column(String)
+    drive_link = Column(Text)
 
 class SocialLink(Base):
     __tablename__ = "social_links"

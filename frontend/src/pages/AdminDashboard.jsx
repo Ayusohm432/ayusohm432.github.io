@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import {
   ShieldAlert, User, Code, Briefcase, Award, Inbox, ExternalLink,
-  Plus, Trash2, RefreshCw, Save, LogOut
+  Plus, Trash2, RefreshCw, Save, LogOut, Upload, FileText, CheckCircle, AlertCircle, Eye
 } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
@@ -166,6 +166,199 @@ const ArrayList = ({ title, endpoint, fields, data, onSave }) => {
   );
 };
 
+// ── Resume Upload Component ────────────────────────────────────
+const ResumeUpload = ({ data, onSave }) => {
+  const [file, setFile] = useState(null);
+  const [dragging, setDragging] = useState(false);
+  const [uploading, setUploading] = useState(false);
+  const [progress, setProgress] = useState(0);
+  const [status, setStatus] = useState(null); // 'success' | 'error' | null
+  const [manualLink, setManualLink] = useState(data?.drive_link || '');
+  const [savingManual, setSavingManual] = useState(false);
+  const fileInputRef = React.useRef(null);
+
+  useEffect(() => { setManualLink(data?.drive_link || ''); }, [data]);
+
+  const handleDrop = (e) => {
+    e.preventDefault();
+    setDragging(false);
+    const dropped = e.dataTransfer.files[0];
+    if (dropped?.type === 'application/pdf') { setFile(dropped); setStatus(null); }
+    else setStatus('error');
+  };
+
+  const handleFileChange = (e) => {
+    const picked = e.target.files[0];
+    if (picked?.type === 'application/pdf') { setFile(picked); setStatus(null); }
+    else setStatus('error');
+  };
+
+  const uploadFile = async () => {
+    if (!file) return;
+    setUploading(true);
+    setProgress(0);
+    setStatus(null);
+    try {
+      const token = localStorage.getItem('adminToken');
+      const formData = new FormData();
+      formData.append('file', file);
+
+      await new Promise((resolve, reject) => {
+        const xhr = new XMLHttpRequest();
+        xhr.open('POST', `${API_URL}/resume/upload`);
+        xhr.setRequestHeader('X-Admin-Token', token);
+        xhr.upload.onprogress = (e) => {
+          if (e.lengthComputable) setProgress(Math.round((e.loaded / e.total) * 100));
+        };
+        xhr.onload = () => {
+          if (xhr.status >= 200 && xhr.status < 300) resolve(xhr.response);
+          else reject(new Error(xhr.statusText));
+        };
+        xhr.onerror = () => reject(new Error('Network error'));
+        xhr.send(formData);
+      });
+
+      setStatus('success');
+      setFile(null);
+      onSave();
+    } catch (err) {
+      setStatus('error');
+    }
+    setUploading(false);
+  };
+
+  const saveManualLink = async (e) => {
+    e.preventDefault();
+    setSavingManual(true);
+    try {
+      const token = localStorage.getItem('adminToken');
+      await axios.put(`${API_URL}/resume`, { drive_link: manualLink }, { headers: { 'X-Admin-Token': token } });
+      onSave();
+      setStatus('success');
+    } catch { setStatus('error'); }
+    setSavingManual(false);
+  };
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true }}
+      className="glass p-8 rounded-3xl border border-white/[0.05] space-y-8 relative shadow-xl"
+    >
+      <div className="flex items-center justify-between">
+        <div>
+          <h3 className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-white to-gray-400 tracking-tight">Resume Binder</h3>
+          <p className="text-xs text-gray-500 font-mono mt-1">Upload a PDF or paste a direct link</p>
+        </div>
+        <div className="w-10 h-10 rounded-2xl bg-primary/10 flex items-center justify-center border border-primary/20">
+          <FileText className="w-5 h-5 text-primary" />
+        </div>
+      </div>
+
+      {/* Current Resume Preview */}
+      {data?.drive_link && (
+        <div className="flex items-center gap-3 p-4 bg-white/[0.03] border border-white/10 rounded-2xl">
+          <CheckCircle className="w-4 h-4 text-green-400 shrink-0" />
+          <div className="flex-1 min-w-0">
+            <p className="text-[10px] text-gray-500 uppercase font-mono tracking-widest mb-0.5">Current Resume</p>
+            <p className="text-xs text-gray-300 truncate font-mono">{data.drive_link}</p>
+          </div>
+          <a href={data.drive_link} target="_blank" rel="noopener noreferrer"
+            className="shrink-0 p-2 rounded-lg bg-primary/10 border border-primary/20 hover:bg-primary/20 transition-colors">
+            <Eye className="w-4 h-4 text-primary" />
+          </a>
+        </div>
+      )}
+
+      {/* Drag & Drop Upload Zone */}
+      <div
+        onDragOver={(e) => { e.preventDefault(); setDragging(true); }}
+        onDragLeave={() => setDragging(false)}
+        onDrop={handleDrop}
+        onClick={() => fileInputRef.current?.click()}
+        className={`relative flex flex-col items-center justify-center gap-4 p-10 rounded-2xl border-2 border-dashed cursor-pointer transition-all duration-300
+          ${ dragging ? 'border-primary/70 bg-primary/10 scale-[1.01]' : 'border-white/10 bg-white/[0.02] hover:border-primary/40 hover:bg-primary/5' }`}
+      >
+        <input ref={fileInputRef} type="file" accept=".pdf" className="hidden" onChange={handleFileChange} />
+        <div className={`w-14 h-14 rounded-2xl flex items-center justify-center border transition-colors ${ dragging ? 'bg-primary/20 border-primary/40' : 'bg-white/5 border-white/10' }`}>
+          <Upload className={`w-6 h-6 transition-colors ${ dragging ? 'text-primary' : 'text-gray-400' }`} />
+        </div>
+        {file ? (
+          <div className="text-center">
+            <p className="text-sm font-semibold text-white">{file.name}</p>
+            <p className="text-xs text-gray-500 mt-1">{(file.size / 1024).toFixed(1)} KB · PDF ready</p>
+          </div>
+        ) : (
+          <div className="text-center">
+            <p className="text-sm font-semibold text-gray-300">Drop your PDF here</p>
+            <p className="text-xs text-gray-600 mt-1">or click to browse files</p>
+          </div>
+        )}
+      </div>
+
+      {/* Progress Bar */}
+      {uploading && (
+        <div className="space-y-2">
+          <div className="flex justify-between text-[10px] font-mono text-gray-500">
+            <span>Uploading...</span><span>{progress}%</span>
+          </div>
+          <div className="w-full h-1.5 bg-white/5 rounded-full overflow-hidden">
+            <motion.div
+              className="h-full bg-gradient-to-r from-primary to-secondary rounded-full"
+              initial={{ width: 0 }}
+              animate={{ width: `${progress}%` }}
+              transition={{ ease: 'linear' }}
+            />
+          </div>
+        </div>
+      )}
+
+      {/* Status Messages */}
+      {status === 'success' && !uploading && (
+        <div className="flex items-center gap-2 text-green-400 text-sm font-mono">
+          <CheckCircle className="w-4 h-4" /> Resume updated successfully!
+        </div>
+      )}
+      {status === 'error' && (
+        <div className="flex items-center gap-2 text-red-400 text-sm font-mono">
+          <AlertCircle className="w-4 h-4" /> Upload failed. Only PDF files are accepted.
+        </div>
+      )}
+
+      {/* Upload Button */}
+      {file && !uploading && (
+        <button onClick={uploadFile}
+          className="w-full px-6 py-3 bg-primary/20 text-primary border border-primary/40 hover:bg-primary/30 rounded-xl font-bold text-sm flex items-center justify-center gap-2 transition-all hover:scale-[1.02] active:scale-[0.98]">
+          <Upload className="w-4 h-4" /> Upload Resume PDF
+        </button>
+      )}
+
+      {/* Divider */}
+      <div className="flex items-center gap-3">
+        <div className="flex-1 h-px bg-white/5" />
+        <span className="text-[10px] text-gray-600 font-mono uppercase tracking-widest">or paste link</span>
+        <div className="flex-1 h-px bg-white/5" />
+      </div>
+
+      {/* Manual Link Fallback */}
+      <form onSubmit={saveManualLink} className="flex gap-3">
+        <input
+          type="text"
+          value={manualLink}
+          onChange={(e) => setManualLink(e.target.value)}
+          placeholder="https://drive.google.com/... or any direct PDF URL"
+          className={inputCls + " flex-1"}
+        />
+        <button type="submit" disabled={savingManual}
+          className="px-5 py-2.5 bg-white/5 border border-white/10 hover:bg-white/10 rounded-xl font-bold text-sm flex items-center gap-2 transition-all shrink-0">
+          {savingManual ? <RefreshCw className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
+        </button>
+      </form>
+    </motion.div>
+  );
+};
+
 
 const AdminDashboard = () => {
   const [tab, setTab] = useState('general');
@@ -303,9 +496,7 @@ const AdminDashboard = () => {
                   { name: 'bio', label: 'Main Biography Block', type: 'textarea' },
                   { name: 'highlights', label: 'Highlights JSON Array', type: 'textarea' }
                 ]} />
-                <SingletonForm title="Resume Binder" endpoint="resume" data={data.resume} onSave={fetchAll} fields={[
-                  { name: 'drive_link', label: 'PDF Document Relative/Absolute Link' }
-                ]} />
+                <ResumeUpload data={data.resume} onSave={fetchAll} />
               </>
             )}
 

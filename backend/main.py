@@ -1,4 +1,5 @@
-from fastapi import FastAPI, Depends, HTTPException, Header
+from fastapi import FastAPI, Depends, HTTPException, Header, UploadFile, File
+from fastapi.staticfiles import StaticFiles
 from sqlalchemy.orm import Session
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
@@ -20,7 +21,11 @@ finally:
     db_init.close()
 
 import os
+import shutil
+import uuid
+from pathlib import Path
 import time
+import base64
 import threading
 import requests
 import logging
@@ -53,6 +58,17 @@ thread = threading.Thread(target=keep_alive, daemon=True)
 thread.start()
 
 app = FastAPI(title="Portfolio API")
+
+# ── Static file serving (uploaded resumes) ──────────────────
+BASE_DIR = Path(__file__).resolve().parent
+STATIC_ROOT = BASE_DIR / "static"
+RESUMES_DIR = STATIC_ROOT / "resumes"
+
+# Ensure directories exist immediately
+RESUMES_DIR.mkdir(parents=True, exist_ok=True)
+
+# Mount with absolute path for stability on Render
+app.mount("/static", StaticFiles(directory=str(STATIC_ROOT)), name="static")
 
 # Security: Restrict CORS to specific production and local origins
 origins = [
@@ -242,6 +258,35 @@ def update_resume(resume: schemas.ResumeBase, db: Session = Depends(get_db), tok
     db_resume = db.query(models.Resume).first()
     for k, v in resume.model_dump().items():
         setattr(db_resume, k, v)
+    db.commit()
+    db.refresh(db_resume)
+    return db_resume
+
+@app.post("/resume/upload", response_model=schemas.Resume)
+async def upload_resume(
+    file: UploadFile = File(...),
+    db: Session = Depends(get_db),
+    token: str = Depends(verify_admin)
+):
+    """Convert PDF to Base64 and store directly in the database for persistence."""
+    if not file.filename.lower().endswith(".pdf"):
+        raise HTTPException(status_code=400, detail="Only PDF files are accepted")
+
+    # Read file content and encode to Base64
+    contents = await file.read()
+    if len(contents) > 5 * 1024 * 1024: # 5MB limit
+        raise HTTPException(status_code=400, detail="File too large (max 5MB)")
+        
+    base64_data = base64.b64encode(contents).decode('utf-8')
+    data_uri = f"data:application/pdf;base64,{base64_data}"
+
+    db_resume = db.query(models.Resume).first()
+    if not db_resume:
+        db_resume = models.Resume(drive_link=data_uri)
+        db.add(db_resume)
+    else:
+        db_resume.drive_link = data_uri
+    
     db.commit()
     db.refresh(db_resume)
     return db_resume
