@@ -24,6 +24,16 @@ const IconMap = {
   ),
 };
 
+// Solid label chip — fully opaque so it's always readable on any background
+const LabelChip = ({ children }) => (
+  <span
+    className="px-3 py-1.5 rounded-xl text-[11px] font-bold text-white uppercase tracking-widest whitespace-nowrap border border-white/15 shadow-lg"
+    style={{ background: 'rgb(10,10,20)' }}
+  >
+    {children}
+  </span>
+);
+
 const SocialBar = () => {
   const [socials, setSocials] = useState([]);
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -40,19 +50,9 @@ const SocialBar = () => {
     setMobileOpen(false);
   };
 
-  // Close FAB when user taps outside
-  useEffect(() => {
-    if (!mobileOpen) return;
-    const handler = (e) => {
-      if (!e.target.closest('#social-fab-root')) setMobileOpen(false);
-    };
-    document.addEventListener('pointerdown', handler);
-    return () => document.removeEventListener('pointerdown', handler);
-  }, [mobileOpen]);
-
   return (
     <>
-      {/* ══ DESKTOP — left-side vertical pill ══ */}
+      {/* ══ DESKTOP — left-side vertical pill (unchanged) ══ */}
       <div className="hidden md:flex fixed z-40 left-6 top-1/2 -translate-y-1/2 pointer-events-none">
         <motion.div
           initial={{ opacity: 0, x: -20 }}
@@ -90,12 +90,30 @@ const SocialBar = () => {
         </motion.div>
       </div>
 
-      {/* ══ MOBILE — collapsible FAB (bottom-right) ══ */}
+      {/* ══ MOBILE — full-screen backdrop + collapsible FAB ══ */}
+
+      {/* Backdrop: dims the page when FAB is open, tap to close */}
+      <AnimatePresence>
+        {mobileOpen && (
+          <motion.div
+            key="fab-backdrop"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }}
+            className="md:hidden fixed inset-0 z-[38] backdrop-blur-sm"
+            style={{ background: 'rgba(4,4,12,0.75)' }}
+            onClick={() => setMobileOpen(false)}
+          />
+        )}
+      </AnimatePresence>
+
+      {/* FAB root — sits above backdrop */}
       <div
         id="social-fab-root"
-        className="md:hidden fixed z-40 bottom-6 right-5 flex flex-col-reverse items-end gap-2.5"
+        className="md:hidden fixed z-[39] bottom-6 right-5 flex flex-col-reverse items-end gap-2.5"
       >
-        {/* Animated items list — grows upward above the FAB */}
+        {/* Animated items list — grows upward */}
         <AnimatePresence>
           {mobileOpen && (
             <motion.div
@@ -107,41 +125,38 @@ const SocialBar = () => {
             >
               {/* Contact CTA */}
               <motion.div
-                initial={{ opacity: 0, y: 10, scale: 0.88 }}
+                initial={{ opacity: 0, y: 12, scale: 0.88 }}
                 animate={{ opacity: 1, y: 0, scale: 1 }}
                 exit={{ opacity: 0, y: 8, scale: 0.88 }}
                 transition={{ duration: 0.18, delay: 0 }}
                 className="flex items-center justify-end gap-3"
               >
-                <span className="px-2.5 py-1 rounded-lg bg-[#0d0d14]/90 border border-white/10 text-[10px] font-bold text-gray-300 uppercase tracking-widest whitespace-nowrap backdrop-blur-md shadow">
-                  Message
-                </span>
+                <LabelChip>Message</LabelChip>
                 <button
                   onClick={scrollToContact}
-                  className="w-12 h-12 rounded-2xl bg-gradient-to-br from-primary to-secondary text-white flex items-center justify-center shadow-lg active:scale-95 transition-transform flex-shrink-0"
+                  className="w-12 h-12 rounded-2xl bg-gradient-to-br from-primary to-secondary text-white flex items-center justify-center shadow-xl active:scale-95 transition-transform flex-shrink-0"
                 >
                   <MessageCircle size={20} />
                 </button>
               </motion.div>
 
-              {/* Social links */}
+              {/* Social links (reversed so topmost = first in list) */}
               {[...socials].reverse().map((social, i) => (
                 <motion.div
                   key={social.id}
-                  initial={{ opacity: 0, y: 10, scale: 0.88 }}
+                  initial={{ opacity: 0, y: 12, scale: 0.88 }}
                   animate={{ opacity: 1, y: 0, scale: 1 }}
                   exit={{ opacity: 0, y: 8, scale: 0.88 }}
-                  transition={{ duration: 0.18, delay: (i + 1) * 0.04 }}
+                  transition={{ duration: 0.18, delay: (i + 1) * 0.045 }}
                   className="flex items-center justify-end gap-3"
                 >
-                  <span className="px-2.5 py-1 rounded-lg bg-[#0d0d14]/90 border border-white/10 text-[10px] font-bold text-gray-300 uppercase tracking-widest whitespace-nowrap backdrop-blur-md shadow">
-                    {social.name}
-                  </span>
+                  <LabelChip>{social.name}</LabelChip>
                   <a
                     href={social.url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className={`w-12 h-12 rounded-2xl glass border border-white/10 flex items-center justify-center text-gray-400 active:scale-95 transition-transform flex-shrink-0 ${social.color_class}`}
+                    className={`w-12 h-12 rounded-2xl flex items-center justify-center text-gray-300 active:scale-95 transition-transform flex-shrink-0 border border-white/15 shadow-xl ${social.color_class}`}
+                    style={{ background: 'rgb(14,14,24)' }}
                   >
                     {IconMap[social.icon_name] || <Terminal size={20} />}
                   </a>
@@ -156,19 +171,43 @@ const SocialBar = () => {
           onClick={() => setMobileOpen(prev => !prev)}
           whileTap={{ scale: 0.9 }}
           aria-label={mobileOpen ? 'Close social links' : 'Open social links'}
-          className={`w-14 h-14 rounded-2xl flex items-center justify-center shadow-2xl border transition-colors duration-300 ${
-            mobileOpen
-              ? 'bg-white/10 border-white/20 text-white'
-              : 'bg-gradient-to-br from-primary to-secondary border-primary/30 text-white'
-          }`}
+          className="w-14 h-14 rounded-2xl flex items-center justify-center shadow-2xl border transition-colors duration-300"
+          style={{
+            background: mobileOpen ? 'rgb(24,24,36)' : undefined,
+            borderColor: mobileOpen ? 'rgba(255,255,255,0.15)' : undefined,
+          }}
         >
-          <motion.span
-            animate={{ rotate: mobileOpen ? 90 : 0 }}
-            transition={{ duration: 0.25, ease: 'easeInOut' }}
-            className="flex items-center justify-center"
-          >
-            {mobileOpen ? <X size={22} /> : <MessageCircle size={22} />}
-          </motion.span>
+          <AnimatePresence mode="wait" initial={false}>
+            {mobileOpen ? (
+              <motion.span
+                key="close"
+                initial={{ rotate: -45, opacity: 0 }}
+                animate={{ rotate: 0, opacity: 1 }}
+                exit={{ rotate: 45, opacity: 0 }}
+                transition={{ duration: 0.2 }}
+                className="flex items-center justify-center text-white"
+              >
+                <X size={22} />
+              </motion.span>
+            ) : (
+              <motion.span
+                key="open"
+                initial={{ rotate: 45, opacity: 0 }}
+                animate={{ rotate: 0, opacity: 1 }}
+                exit={{ rotate: -45, opacity: 0 }}
+                transition={{ duration: 0.2 }}
+                className="flex items-center justify-center text-white"
+                style={{
+                  background: 'linear-gradient(135deg, var(--color-primary, #3b82f6), var(--color-secondary, #8b5cf6))',
+                  borderRadius: '14px',
+                  width: '56px',
+                  height: '56px',
+                }}
+              >
+                <MessageCircle size={22} />
+              </motion.span>
+            )}
+          </AnimatePresence>
         </motion.button>
       </div>
     </>

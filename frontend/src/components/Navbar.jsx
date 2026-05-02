@@ -24,7 +24,7 @@ const Navbar = () => {
   }, []);
 
   return (
-    <nav className={`fixed w-full z-40 transition-all duration-300 ${isScrolled ? 'glass py-3' : 'bg-transparent py-5'}`}>
+    <nav className={`fixed w-full z-50 transition-all duration-300 ${isScrolled ? 'glass py-3' : 'bg-transparent py-5'}`}>
       <div className="container mx-auto px-6 sm:px-12 flex justify-between items-center">
         {/* Logo */}
         <Link to="/" className="flex items-center gap-2 text-2xl font-bold tracking-tighter">
@@ -65,7 +65,7 @@ const Navbar = () => {
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
-            className="absolute top-full left-0 w-full h-[100dvh] bg-[#0a0a0a]/98 backdrop-blur-3xl border-t border-white/5 flex flex-col items-center pt-12 pb-32 md:hidden overflow-y-auto"
+            className="absolute top-full left-0 w-full h-[100dvh] backdrop-blur-2xl border-t border-white/5 flex flex-col items-center pt-12 pb-32 md:hidden overflow-y-auto" style={{ background: 'rgba(8,8,16,0.97)' }}
           >
             <div className="flex flex-col items-center space-y-8 w-full mt-4">
               {navItems.map((item, i) => (
