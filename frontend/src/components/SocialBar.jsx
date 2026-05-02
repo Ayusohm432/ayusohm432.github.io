@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
-import { Linkedin, Github, Twitter, Mail, Phone, MessageCircle, Globe, Terminal } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Linkedin, Github, Twitter, Mail, Phone, MessageCircle, Globe, Terminal, X } from 'lucide-react';
 import axios from 'axios';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
@@ -26,61 +26,152 @@ const IconMap = {
 
 const SocialBar = () => {
   const [socials, setSocials] = useState([]);
+  const [mobileOpen, setMobileOpen] = useState(false);
 
   useEffect(() => {
     axios.get(`${API_URL}/social-links`)
-      .then(res => {
-        setSocials(res.data);
-      })
-      .catch(err => {
-        console.error("Failed to fetch social links", err);
-        // Fallback to minimal data if needed
-      });
+      .then(res => setSocials(res.data))
+      .catch(err => console.error('Failed to fetch social links', err));
   }, []);
 
   const scrollToContact = () => {
     const contactSection = document.getElementById('contact');
-    if (contactSection) {
-      contactSection.scrollIntoView({ behavior: 'smooth' });
-    }
+    if (contactSection) contactSection.scrollIntoView({ behavior: 'smooth' });
+    setMobileOpen(false);
   };
 
+  // Close FAB when user taps outside
+  useEffect(() => {
+    if (!mobileOpen) return;
+    const handler = (e) => {
+      if (!e.target.closest('#social-fab-root')) setMobileOpen(false);
+    };
+    document.addEventListener('pointerdown', handler);
+    return () => document.removeEventListener('pointerdown', handler);
+  }, [mobileOpen]);
+
   return (
-    <div className="fixed z-50 pointer-events-none md:left-6 md:top-1/2 md:-translate-y-1/2 md:w-auto w-full bottom-6 left-0 flex justify-center items-center">
-      <motion.div 
-        initial={{ opacity: 0, x: -20 }}
-        animate={{ opacity: 1, x: 0 }}
-        transition={{ duration: 0.8, delay: 1 }}
-        className="glass-social pointer-events-auto flex md:flex-col items-center gap-2 p-2 rounded-2xl border border-white/10 backdrop-blur-3xl bg-[#0a0a0a]/40 shadow-[0_0_50px_rgba(0,0,0,0.5)] max-w-[90vw] overflow-x-auto no-scrollbar md:overflow-visible"
-      >
-        <button 
-          onClick={scrollToContact}
-          className="flex items-center justify-center w-10 h-10 md:w-12 md:h-12 rounded-xl bg-gradient-to-br from-primary to-secondary text-white hover:shadow-[0_0_20px_rgba(59,130,246,0.5)] transition-all duration-300 active:scale-95 group relative mb-0 md:mb-2 flex-shrink-0"
+    <>
+      {/* ══ DESKTOP — left-side vertical pill ══ */}
+      <div className="hidden md:flex fixed z-40 left-6 top-1/2 -translate-y-1/2 pointer-events-none">
+        <motion.div
+          initial={{ opacity: 0, x: -20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.8, delay: 1 }}
+          className="glass-social pointer-events-auto flex flex-col items-center gap-2 p-2 rounded-2xl border border-white/10 backdrop-blur-3xl bg-[#0a0a0a]/40 shadow-[0_0_50px_rgba(0,0,0,0.5)]"
         >
-          <MessageCircle size={22} className="group-hover:rotate-12 transition-transform" />
-          <span className="absolute left-full ml-4 px-2 py-1 bg-surfaceLight border border-white/10 rounded text-[10px] font-bold text-white opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity whitespace-nowrap hidden md:block">
-            LEAVE A MESSAGE
-          </span>
-        </button>
-
-        <div className="w-[1px] h-6 bg-white/10 md:w-10 md:h-[1px] my-0 md:my-1 flex-shrink-0"></div>
-
-        {socials.map((social) => (
-          <a
-            key={social.id}
-            href={social.url}
-            target="_blank"
-            rel="noopener noreferrer"
-            className={`flex items-center justify-center w-10 h-10 md:w-12 md:h-12 rounded-xl text-gray-400 transition-all duration-300 group relative flex-shrink-0 ${social.color_class}`}
+          {/* CTA */}
+          <button
+            onClick={scrollToContact}
+            className="flex items-center justify-center w-12 h-12 rounded-xl bg-gradient-to-br from-primary to-secondary text-white hover:shadow-[0_0_20px_rgba(59,130,246,0.5)] transition-all duration-300 active:scale-95 group relative mb-2"
           >
-            {IconMap[social.icon_name] || <Terminal size={20} />}
-            <span className="absolute left-full ml-4 px-2 py-1 bg-surfaceLight border border-white/10 rounded text-[10px] font-bold text-white opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity whitespace-nowrap hidden md:block uppercase tracking-widest">
-              {social.name}
+            <MessageCircle size={22} className="group-hover:rotate-12 transition-transform" />
+            <span className="absolute left-full ml-4 px-2 py-1 bg-surfaceLight border border-white/10 rounded text-[10px] font-bold text-white opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity whitespace-nowrap">
+              LEAVE A MESSAGE
             </span>
-          </a>
-        ))}
-      </motion.div>
-    </div>
+          </button>
+
+          <div className="w-10 h-[1px] bg-white/10 my-1" />
+
+          {socials.map((social) => (
+            <a
+              key={social.id}
+              href={social.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className={`flex items-center justify-center w-12 h-12 rounded-xl text-gray-400 transition-all duration-300 group relative ${social.color_class}`}
+            >
+              {IconMap[social.icon_name] || <Terminal size={20} />}
+              <span className="absolute left-full ml-4 px-2 py-1 bg-surfaceLight border border-white/10 rounded text-[10px] font-bold text-white opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity whitespace-nowrap uppercase tracking-widest">
+                {social.name}
+              </span>
+            </a>
+          ))}
+        </motion.div>
+      </div>
+
+      {/* ══ MOBILE — collapsible FAB (bottom-right) ══ */}
+      <div
+        id="social-fab-root"
+        className="md:hidden fixed z-40 bottom-6 right-5 flex flex-col-reverse items-end gap-2.5"
+      >
+        {/* Animated items list — grows upward above the FAB */}
+        <AnimatePresence>
+          {mobileOpen && (
+            <motion.div
+              key="fab-items"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="flex flex-col-reverse gap-2.5 mb-1"
+            >
+              {/* Contact CTA */}
+              <motion.div
+                initial={{ opacity: 0, y: 10, scale: 0.88 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                exit={{ opacity: 0, y: 8, scale: 0.88 }}
+                transition={{ duration: 0.18, delay: 0 }}
+                className="flex items-center justify-end gap-3"
+              >
+                <span className="px-2.5 py-1 rounded-lg bg-[#0d0d14]/90 border border-white/10 text-[10px] font-bold text-gray-300 uppercase tracking-widest whitespace-nowrap backdrop-blur-md shadow">
+                  Message
+                </span>
+                <button
+                  onClick={scrollToContact}
+                  className="w-12 h-12 rounded-2xl bg-gradient-to-br from-primary to-secondary text-white flex items-center justify-center shadow-lg active:scale-95 transition-transform flex-shrink-0"
+                >
+                  <MessageCircle size={20} />
+                </button>
+              </motion.div>
+
+              {/* Social links */}
+              {[...socials].reverse().map((social, i) => (
+                <motion.div
+                  key={social.id}
+                  initial={{ opacity: 0, y: 10, scale: 0.88 }}
+                  animate={{ opacity: 1, y: 0, scale: 1 }}
+                  exit={{ opacity: 0, y: 8, scale: 0.88 }}
+                  transition={{ duration: 0.18, delay: (i + 1) * 0.04 }}
+                  className="flex items-center justify-end gap-3"
+                >
+                  <span className="px-2.5 py-1 rounded-lg bg-[#0d0d14]/90 border border-white/10 text-[10px] font-bold text-gray-300 uppercase tracking-widest whitespace-nowrap backdrop-blur-md shadow">
+                    {social.name}
+                  </span>
+                  <a
+                    href={social.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={`w-12 h-12 rounded-2xl glass border border-white/10 flex items-center justify-center text-gray-400 active:scale-95 transition-transform flex-shrink-0 ${social.color_class}`}
+                  >
+                    {IconMap[social.icon_name] || <Terminal size={20} />}
+                  </a>
+                </motion.div>
+              ))}
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        {/* FAB toggle button */}
+        <motion.button
+          onClick={() => setMobileOpen(prev => !prev)}
+          whileTap={{ scale: 0.9 }}
+          aria-label={mobileOpen ? 'Close social links' : 'Open social links'}
+          className={`w-14 h-14 rounded-2xl flex items-center justify-center shadow-2xl border transition-colors duration-300 ${
+            mobileOpen
+              ? 'bg-white/10 border-white/20 text-white'
+              : 'bg-gradient-to-br from-primary to-secondary border-primary/30 text-white'
+          }`}
+        >
+          <motion.span
+            animate={{ rotate: mobileOpen ? 90 : 0 }}
+            transition={{ duration: 0.25, ease: 'easeInOut' }}
+            className="flex items-center justify-center"
+          >
+            {mobileOpen ? <X size={22} /> : <MessageCircle size={22} />}
+          </motion.span>
+        </motion.button>
+      </div>
+    </>
   );
 };
 
